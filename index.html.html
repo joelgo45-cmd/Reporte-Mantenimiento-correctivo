@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Correctivo · Envases Universales</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&family=Barlow+Semi+Condensed:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{
+  --bg:#09090b;--s1:#0f1117;--s2:#16181f;--s3:#1c1e27;
+  --border:#252830;--border2:#32364a;
+  --accent:#38bdf8;--accent2:#0ea5e9;
+  --red:#f87171;--green:#4ade80;--amber:#fbbf24;--purple:#a78bfa;
+  --text:#e8eaf0;--muted:#6b7280;--label:#9ca3af;--r:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh;}
+
+.nav{display:flex;background:var(--s1);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:300;}
+.nav-btn{flex:1;padding:12px 4px;background:none;border:none;color:var(--muted);
+  font-family:'Barlow Condensed',sans-serif;font-size:.78rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
+  border-bottom:2px solid transparent;transition:color .15s,border-color .15s;}
+.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+.panel{display:none;}.panel.active{display:block;}
+
+.hdr{background:linear-gradient(135deg,#060a14,#0c1422,#060a14);
+  border-bottom:2px solid var(--accent2);padding:14px 16px;display:flex;align-items:center;gap:12px;}
+.hdr-icon{font-size:1.8rem;}
+.hdr h1{font-family:'Barlow Condensed',sans-serif;font-size:1.25rem;font-weight:800;
+  color:var(--accent);letter-spacing:.04em;text-transform:uppercase;line-height:1.1;}
+.hdr p{font-size:.63rem;color:rgba(56,189,248,.5);letter-spacing:.1em;text-transform:uppercase;margin-top:2px;}
+.hdr-badge{margin-left:auto;background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2);
+  border-radius:8px;padding:5px 10px;text-align:center;flex-shrink:0;}
+.hdr-badge .n{font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:800;color:var(--accent);line-height:1;}
+.hdr-badge .l{font-size:.55rem;color:rgba(56,189,248,.5);letter-spacing:.1em;text-transform:uppercase;}
+
+/* PROGRESO */
+.prog-bar{display:flex;gap:0;background:var(--s1);border-bottom:1px solid var(--border);padding:8px 14px;gap:6px;max-width:680px;margin:0 auto;}
+.prog-step{flex:1;height:3px;border-radius:2px;background:var(--border2);transition:background .3s;}
+.prog-step.done{background:var(--accent);}
+.prog-step.active{background:var(--accent2);}
+
+.fw{max-width:680px;margin:0 auto;padding:12px 12px 80px;}
+.sec{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:12px;}
+.sec-hd{font-family:'Barlow Condensed',sans-serif;font-size:.72rem;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--accent);
+  margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.sec-hd::after{content:'';flex:1;height:1px;background:var(--border);}
+.sec-hd .sec-n{background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.2);
+  border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;
+  font-size:.68rem;font-weight:800;color:var(--accent);flex-shrink:0;}
+
+/* INPUTS */
+label{display:block;font-size:.72rem;color:var(--label);margin-bottom:3px;margin-top:10px;font-weight:500;}
+label:first-of-type{margin-top:0;}
+.q-label{font-size:.84rem;color:var(--text);font-weight:600;margin-bottom:6px;margin-top:12px;line-height:1.4;}
+.q-label:first-of-type{margin-top:0;}
+.q-hint{font-size:.7rem;color:var(--muted);margin-bottom:6px;margin-top:-2px;}
+input[type=text],input[type=time],input[type=date],input[type=number],select,textarea{
+  width:100%;background:var(--s2);border:1px solid var(--border);border-radius:8px;
+  color:var(--text);font-family:'Barlow',sans-serif;font-size:.88rem;
+  padding:9px 11px;outline:none;appearance:none;
+  transition:border-color .15s,box-shadow .15s;}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(56,189,248,.1);}
+input[type=time]{font-family:'Barlow Semi Condensed',sans-serif;font-size:.92rem;letter-spacing:.04em;}
+textarea{resize:vertical;min-height:64px;line-height:1.5;}
+select option{background:var(--s2);}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;}
+
+/* TÉCNICOS */
+@keyframes sli{from{opacity:0;transform:translateY(-5px);}to{opacity:1;transform:none;}}
+.tec-card{background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:8px 11px;margin-top:8px;display:none;}
+.tec-card.on{display:block;animation:sli .2s ease;}
+.tec-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid var(--border);cursor:pointer;}
+.tec-row:last-child{border-bottom:none;padding-bottom:2px;}
+.tec-row:hover{background:rgba(56,189,248,.04);border-radius:6px;}
+.tec-radio{accent-color:var(--accent);width:17px;height:17px;flex-shrink:0;cursor:pointer;}
+.tec-info{flex:1;}
+.tec-name{font-size:.83rem;font-weight:600;color:var(--text);}
+.tec-meta{font-size:.64rem;color:var(--muted);margin-top:1px;}
+.tec-badge{font-family:'Barlow Condensed',sans-serif;font-size:.64rem;font-weight:700;
+  background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.18);
+  border-radius:4px;padding:2px 6px;color:var(--accent);white-space:nowrap;}
+
+/* MÉTRICAS CALCULADAS */
+.met-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+.met-card{background:var(--s3);border:1px solid var(--border2);border-radius:9px;padding:10px 12px;text-align:center;}
+.met-v{font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:800;line-height:1;}
+.met-u{font-size:.62rem;color:var(--muted);margin-top:1px;}
+.met-l{font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--label);margin-top:5px;font-weight:600;}
+.met-card.mttr .met-v{color:var(--red);}
+.met-card.mtbf .met-v{color:var(--green);}
+.met-card.ttm  .met-v{color:var(--accent);}
+.met-card.disp .met-v{color:var(--amber);}
+.met-auto{font-size:.62rem;color:var(--green);margin-top:2px;}
+
+/* CAUSA RAÍZ AUTO */
+.cr-box{background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);
+  border-radius:9px;padding:11px 13px;margin-top:10px;display:none;animation:sli .25s ease;}
+.cr-box.on{display:block;}
+.cr-tag{font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--purple);margin-bottom:5px;display:flex;align-items:center;gap:6px;}
+.cr-val{font-size:.84rem;font-weight:600;color:var(--text);margin-bottom:4px;}
+.cr-det{font-size:.78rem;color:var(--label);line-height:1.55;}
+
+/* ACCIONES RÁPIDAS */
+.acc-list{display:flex;flex-direction:column;gap:8px;}
+.acc-item{background:var(--s2);border:1px solid var(--border);border-radius:9px;
+  padding:10px 11px;display:grid;grid-template-columns:1fr auto;gap:7px;animation:sli .2s ease;}
+.acc-item .af{display:flex;flex-direction:column;gap:6px;flex:1;}
+.acc-num{font-family:'Barlow Condensed',sans-serif;font-size:.76rem;font-weight:700;color:var(--accent);letter-spacing:.08em;}
+.acc-item textarea{background:var(--s3);border-color:transparent;padding:7px 8px;font-size:.82rem;min-height:44px;}
+.acc-item textarea:focus{border-color:var(--accent);background:var(--s2);}
+.btn-rm{background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer;
+  padding:3px 5px;border-radius:4px;transition:color .15s;align-self:flex-start;}
+.btn-rm:hover{color:var(--red);}
+
+/* BOTONES */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.86rem;
+  letter-spacing:.08em;text-transform:uppercase;border:none;cursor:pointer;
+  border-radius:9px;padding:10px 18px;transition:all .15s;}
+.btn-primary{background:var(--accent);color:#000;width:100%;font-size:.98rem;
+  padding:14px;border-radius:10px;margin-top:6px;box-shadow:0 4px 20px rgba(56,189,248,.22);}
+.btn-primary:hover{background:var(--accent2);transform:translateY(-1px);}
+.btn-add{background:rgba(56,189,248,.07);color:var(--accent);border:1px solid rgba(56,189,248,.18);margin-top:8px;font-size:.8rem;padding:8px 14px;}
+.btn-add:hover{background:rgba(56,189,248,.13);}
+.btn-export{background:var(--s3);color:var(--text);border:1px solid var(--border2);padding:9px 16px;}
+.btn-export:hover{border-color:var(--accent);color:var(--accent);}
+.btn-danger{background:rgba(248,113,113,.08);color:var(--red);border:1px solid rgba(248,113,113,.2);padding:9px 16px;}
+
+/* PANEL RESULTADO */
+.rpt-wrap{display:none;margin-top:14px;}
+.rpt-wrap.on{display:flex;flex-direction:column;gap:11px;animation:sli .3s ease;}
+.rpt-box{background:var(--s2);border:1px solid var(--border2);border-radius:12px;overflow:hidden;}
+.rpt-box-hd{background:var(--s3);border-bottom:1px solid var(--border);
+  padding:9px 13px;font-family:'Barlow Condensed',sans-serif;font-size:.7rem;
+  font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--label);}
+.rpt-pre{white-space:pre-wrap;word-break:break-word;font-family:'Barlow',sans-serif;
+  font-size:.8rem;line-height:1.68;color:var(--text);padding:13px 14px 15px;}
+.btn-copiar{background:rgba(74,222,128,.1);color:var(--green);
+  border:2px solid rgba(74,222,128,.28);width:100%;font-size:1rem;
+  padding:15px;border-radius:12px;font-family:'Barlow Condensed',sans-serif;
+  font-weight:800;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:9px;transition:all .15s;}
+.btn-copiar:hover{background:rgba(74,222,128,.18);}
+.btn-copiar.copiado{background:rgba(74,222,128,.22);border-color:var(--green);pointer-events:none;}
+.confirm-panel{display:none;background:rgba(74,222,128,.05);
+  border:1px solid rgba(74,222,128,.2);border-radius:12px;
+  padding:14px 16px;text-align:center;animation:sli .3s ease;}
+.confirm-panel.on{display:block;}
+.confirm-badge{font-family:'Barlow Condensed',sans-serif;font-size:1.05rem;
+  font-weight:800;color:var(--green);letter-spacing:.06em;margin-bottom:5px;}
+.confirm-hint{font-size:.76rem;color:var(--muted);line-height:1.5;}
+
+/* Botones de acción post-copia */
+.post-btns{display:none;flex-direction:column;gap:9px;}
+.post-btns.on{display:flex;animation:sli .3s ease;}
+.btn-registrar{background:var(--accent);color:#000;width:100%;font-size:.96rem;
+  padding:14px;border-radius:10px;font-family:'Barlow Condensed',sans-serif;
+  font-weight:800;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  box-shadow:0 4px 18px rgba(56,189,248,.22);border:none;transition:all .15s;}
+.btn-registrar:hover{background:var(--accent2);}
+.btn-nuevo{background:rgba(255,255,255,.04);color:var(--muted);width:100%;font-size:.86rem;
+  padding:12px;border-radius:9px;font-family:'Barlow Condensed',sans-serif;
+  font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
+  border:1px solid var(--border);transition:all .15s;}
+.btn-nuevo:hover{border-color:var(--accent);color:var(--accent);}
+
+/* HISTORIAL */
+.db-wrap{padding:12px;}
+.kpi-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
+.kpi-chip{background:var(--s2);border:1px solid var(--border2);border-radius:9px;padding:9px 10px;text-align:center;}
+.kpi-chip .kv{font-family:'Barlow Condensed',sans-serif;font-size:1.25rem;font-weight:800;line-height:1;}
+.kpi-chip .kl{font-size:.6rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:3px;}
+.kpi-chip.mttr .kv{color:var(--red);}
+.kpi-chip.mtbf .kv{color:var(--green);}
+.kpi-chip.disp .kv{color:var(--accent);}
+.kpi-chip.total .kv{color:var(--amber);}
+.db-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px;}
+.db-total{margin-left:auto;background:var(--s2);border:1px solid var(--border);
+  border-radius:20px;padding:4px 12px;font-family:'Barlow Condensed',sans-serif;font-size:.76rem;color:var(--label);}
+.tbl-wrap{overflow-x:auto;border-radius:9px;border:1px solid var(--border);}
+table{border-collapse:collapse;width:100%;min-width:760px;background:var(--s1);}
+thead tr{background:var(--s2);}
+th{padding:8px 9px;text-align:left;font-family:'Barlow Condensed',sans-serif;
+  font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);white-space:nowrap;border-bottom:1px solid var(--border);}
+tbody tr{border-bottom:1px solid var(--border);transition:background .1s;}
+tbody tr:hover{background:var(--s2);}
+td{padding:7px 9px;font-size:.74rem;color:var(--text);vertical-align:top;}
+td.idc{font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;color:var(--accent);}
+.pill{display:inline-block;padding:2px 7px;border-radius:20px;font-size:.64rem;font-weight:700;}
+.pA{background:#1a1228;color:#e879f9;}.pB{background:#0e1a22;color:#38bdf8;}
+.pC{background:#0e1a14;color:#4ade80;}.pD{background:#1e1a0e;color:#fbbf24;}
+.pMTD{background:#1a120e;color:#fb923c;}.pMPC{background:#111820;color:#94a3b8;}
+.del-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.9rem;padding:2px 4px;border-radius:3px;}
+.del-btn:hover{color:var(--red);}
+.empty{text-align:center;padding:40px 16px;color:var(--muted);}
+.empty .ei{font-size:2.4rem;margin-bottom:7px;}
+.empty p{font-size:.8rem;}
+
+.lb{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.93);align-items:center;justify-content:center;}
+.lb.on{display:flex;}
+.lb img{max-width:93vw;max-height:89vh;border-radius:9px;}
+.lb-x{position:absolute;top:14px;right:18px;font-size:2rem;color:#fff;cursor:pointer;background:none;border:none;}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);
+  background:#16181f;border:1px solid var(--border2);color:var(--text);
+  padding:10px 20px;border-radius:28px;font-size:.8rem;font-weight:500;
+  box-shadow:0 4px 22px rgba(0,0,0,.6);transition:transform .28s cubic-bezier(.175,.885,.32,1.275);
+  z-index:9999;white-space:normal;max-width:88vw;text-align:center;line-height:1.4;}
+.toast.on{transform:translateX(-50%) translateY(0);}
+@media(max-width:480px){.g2,.g3{grid-template-columns:1fr;}.kpi-bar{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="goTab(this,'form')">🔧 Nuevo Correctivo</button>
+  <button class="nav-btn" onclick="goTab(this,'db')">📊 Historial · KPIs</button>
+</div>
+
+<div class="panel active" id="panel-form">
+  <div class="hdr">
+    <div class="hdr-icon">🔧</div>
+    <div>
+      <h1>Mantenimiento Correctivo</h1>
+      <p>Envases Universales · MTTR · MTBF · Disponibilidad</p>
+    </div>
+    <div class="hdr-badge">
+      <div class="n" id="nextId">—</div>
+      <div class="l">MC#</div>
+    </div>
+  </div>
+
+  <!-- barra de progreso -->
+  <div style="background:var(--s1);border-bottom:1px solid var(--border);padding:7px 14px;">
+    <div style="max-width:680px;margin:0 auto;display:flex;gap:5px;">
+      <div class="prog-step active" id="ps1"></div>
+      <div class="prog-step" id="ps2"></div>
+      <div class="prog-step" id="ps3"></div>
+      <div class="prog-step" id="ps4"></div>
+    </div>
+  </div>
+
+  <div class="fw">
+
+    <!-- ① QUIÉN / CUÁNDO (30 seg) -->
+    <div class="sec" id="sec1">
+      <div class="sec-hd"><span class="sec-n">1</span> ¿Quién y cuándo?</div>
+      <div class="g2">
+        <div>
+          <label>Cuadrilla</label>
+          <select id="cuadrilla" onchange="onCuadrilla();updateProg();">
+            <option value="">— Selecciona —</option>
+            <option value="A">Cuadrilla A</option>
+            <option value="B">Cuadrilla B</option>
+            <option value="C">Cuadrilla C</option>
+            <option value="D">Cuadrilla D</option>
+            <option value="MTD">MTD</option>
+            <option value="MPC">MP/C</option>
+          </select>
+        </div>
+        <div>
+          <label>Fecha</label>
+          <input type="date" id="fecha" onchange="updateProg()">
+        </div>
+      </div>
+      <div class="g2">
+        <div>
+          <label>Turno</label>
+          <select id="turno">
+            <option value="">— Selecciona —</option>
+            <option>T1 (07:00–19:00)</option>
+            <option>T2 (19:00–07:00)</option>
+          </select>
+        </div>
+        <div>
+          <label>Tipo de falla</label>
+          <select id="tipoFalla">
+            <option value="">— Selecciona —</option>
+            <option>Mecánica</option>
+            <option>Eléctrica</option>
+            <option>Neumática</option>
+            <option>Hidráulica</option>
+            <option>Electrónica/Control</option>
+            <option>Instrumentación</option>
+            <option>Lubricación</option>
+            <option>Estructural</option>
+          </select>
+        </div>
+      </div>
+      <!-- Técnico líder -->
+      <div class="tec-card" id="tecCard">
+        <div style="font-size:.66rem;color:var(--label);font-weight:600;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;">Técnico líder de intervención</div>
+        <div id="tecList"></div>
+      </div>
+    </div>
+
+    <!-- ② EQUIPO (30 seg) -->
+    <div class="sec" id="sec2">
+      <div class="sec-hd"><span class="sec-n">2</span> ¿Qué equipo falló?</div>
+      <div class="g2">
+        <div>
+          <label>Línea</label>
+          <select id="linea" onchange="actualizarMaquinas();calcMtbfAuto();updateProg();">
+            <option value="">— Selecciona —</option>
+            <option value="L1">Línea 1</option><option value="L2">Línea 2</option>
+            <option value="L3">Línea 3</option><option value="L4">Línea 4</option>
+            <option value="L7">Línea 7</option><option value="L8">Línea 8</option>
+            <option value="PAL1">Paletizador L1</option><option value="PAL3">Paletizador L3</option>
+            <option value="PAL4">Paletizador L4</option><option value="PAL72">Paletizador L7y2</option>
+            <option value="PAL8">Paletizador L8</option><option value="SRV">Servicios Gles.</option>
+          </select>
+        </div>
+        <div>
+          <label>Máquina / Equipo</label>
+          <select id="maquina" onchange="calcMtbfAuto();updateProg();">
+            <option value="">— Selecciona línea primero —</option>
+          </select>
+        </div>
+      </div>
+      <label>Componente afectado <span style="color:var(--muted);font-weight:400;">(opcional)</span></label>
+      <input type="text" id="componente" placeholder="Ej: variador, cadena de arrastre, sello mecánico...">
+      <label>Modo de falla</label>
+      <select id="modoFalla" onchange="onModoFalla()">
+        <option value="">— Selecciona —</option>
+        <option value="RUIDO">Ruido / vibración anormal</option>
+        <option value="CALOR">Sobrecalentamiento</option>
+        <option value="FUGA">Fuga (aceite / grasa / aire / agua)</option>
+        <option value="DESGASTE">Desgaste excesivo / rotura</option>
+        <option value="ELECTRICO">Falla eléctrica / cortocircuito</option>
+        <option value="ALARMA">Alarma / paro automático</option>
+        <option value="ALINEACION">Desalineación / desajuste</option>
+        <option value="CORROSION">Corrosión / oxidación</option>
+        <option value="SENSOR">Error de sensor / encoder</option>
+        <option value="FATIGA">Fatiga de material</option>
+      </select>
+
+      <!-- Causa raíz automática -->
+      <div class="cr-box" id="crBox">
+        <div class="cr-tag">🤖 Causa raíz sugerida automáticamente</div>
+        <div class="cr-val" id="crVal">—</div>
+        <div class="cr-det" id="crDet">—</div>
+      </div>
+    </div>
+
+    <!-- ③ TIEMPOS (40 seg) -->
+    <div class="sec" id="sec3">
+      <div class="sec-hd"><span class="sec-n">3</span> Tiempos de intervención</div>
+      <div class="g3">
+        <div>
+          <label>⚡ Detección</label>
+          <input type="time" id="hDeteccion" onchange="calcMetrics();updateProg();">
+        </div>
+        <div>
+          <label>🔧 Inicio</label>
+          <input type="time" id="hInicioInt" onchange="calcMetrics()">
+        </div>
+        <div>
+          <label>✅ Fin / marcha</label>
+          <input type="time" id="hFinInt" onchange="calcMetrics()">
+        </div>
+      </div>
+
+      <!-- KPIs calculados automáticamente -->
+      <div class="met-grid">
+        <div class="met-card mttr">
+          <div class="met-v" id="mttrVal">—</div>
+          <div class="met-u">minutos</div>
+          <div class="met-l">MTTR</div>
+        </div>
+        <div class="met-card mtbf">
+          <div class="met-v" id="mtbfVal">—</div>
+          <div class="met-u">horas</div>
+          <div class="met-l">MTBF</div>
+          <div class="met-auto" id="mtbfSrc">desde historial</div>
+        </div>
+        <div class="met-card ttm">
+          <div class="met-v" id="ttmVal">—</div>
+          <div class="met-u">minutos</div>
+          <div class="met-l">TTM total</div>
+        </div>
+        <div class="met-card disp">
+          <div class="met-v" id="dispVal">—</div>
+          <div class="met-u">%</div>
+          <div class="met-l">Disponibilidad</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ④ DESCRIPCIÓN Y ACCIONES (60 seg) -->
+    <div class="sec" id="sec4">
+      <div class="sec-hd"><span class="sec-n">4</span> Descripción y acciones</div>
+
+      <p class="q-label">¿Qué ocurrió exactamente? ¿Cómo se detectó la falla?</p>
+      <p class="q-hint">Incluye síntomas observados, condición del equipo y si afectó producción.</p>
+      <textarea id="descripcion" rows="3"></textarea>
+
+      <p class="q-label" style="margin-top:14px;">¿Qué se hizo para corregirlo?</p>
+      <p class="q-hint">Una acción por línea es suficiente. Puedes agregar más si aplica.</p>
+      <div class="acc-list" id="accList"></div>
+      <button class="btn btn-add" onclick="addAcc()">➕ Agregar acción</button>
+
+      <p class="q-label" style="margin-top:14px;">Estado de cierre</p>
+      <select id="estadoCierre">
+        <option value="CERRADO">✅ Cerrado — equipo operativo</option>
+        <option value="TEMPORAL">⚠️ Reparación temporal — pendiente definitiva</option>
+        <option value="PENDIENTE">🔴 Pendiente — requiere paro programado</option>
+      </select>
+
+      <p class="q-label" style="margin-top:14px;">¿Requiere seguimiento?</p>
+      <select id="seguimiento">
+        <option value="NO">No — queda resuelto</option>
+        <option value="MP">Sí — programar preventivo</option>
+        <option value="INSP">Sí — inspección de seguimiento</option>
+        <option value="PROV">Sí — cotizar / pedir refacción</option>
+      </select>
+    </div>
+
+    <button class="btn btn-primary" onclick="generarReporte()">
+      📄 Generar reporte
+    </button>
+
+    <!-- PANEL DE RESULTADO -->
+    <div class="rpt-wrap" id="rptWrap">
+      <div class="rpt-box">
+        <div class="rpt-box-hd">🔧 REPORTE DE MANTENIMIENTO CORRECTIVO · LISTO PARA COPIAR</div>
+        <pre id="rptMsg" class="rpt-pre"></pre>
+      </div>
+
+      <!-- PASO 1: Copiar -->
+      <button class="btn-copiar" id="btnCopiar" onclick="copiarReporte()">
+        📋 Copiar al portapapeles
+      </button>
+
+      <!-- PASO 2: Confirmación -->
+      <div class="confirm-panel" id="confirmPanel">
+        <div class="confirm-badge">✅ ¡Texto copiado en el portapapeles!</div>
+        <p class="confirm-hint">Pégalo donde lo necesites (WhatsApp, correo, etc.).<br>Luego registra y limpia o descarta.</p>
+      </div>
+
+      <!-- PASO 3: Acciones post-copia -->
+      <div class="post-btns" id="postBtns">
+        <button class="btn-registrar" onclick="registrarYLimpiar()">
+          ✅ Registrar en historial y limpiar
+        </button>
+        <button class="btn-nuevo" onclick="soloLimpiar()">
+          🗑 Descartar y empezar nuevo
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- HISTORIAL -->
+<div class="panel" id="panel-db">
+  <div class="db-wrap">
+    <div class="kpi-bar" id="kpiBar"></div>
+    <div class="db-bar">
+      <button class="btn btn-export" onclick="exportExcel()">📥 Excel</button>
+      <button class="btn btn-danger" onclick="limpiarDB()">🗑 Borrar todo</button>
+      <div class="db-total" id="dbTotal">0 registros</div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr>
+          <th>MC#</th><th>Fecha</th><th>Cuad.</th><th>Líder</th>
+          <th>Línea</th><th>Equipo</th><th>Tipo</th>
+          <th>MTTR(min)</th><th>MTBF(h)</th><th>Disp%</th><th>Estado</th><th></th>
+        </tr></thead>
+        <tbody id="dbBody"></tbody>
+      </table>
+    </div>
+    <div class="empty" id="emptyMsg">
+      <div class="ei">🔧</div>
+      <p>Sin registros aún.<br>Ve a <b>Nuevo Correctivo</b> para comenzar.</p>
+    </div>
+  </div>
+</div>
+
+<div class="lb" id="lb" onclick="closeLB()">
+  <button class="lb-x">✕</button><img id="lbImg" src="" alt="">
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════
+// CONFIGURACIÓN — pon tu URL de Apps Script aquí
+// ═══════════════════════════════════════
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwug4es1IVy4x0udfoeFr8m-1ilPfIJH5hyVJWuOqMPwTpJk2hBcWdfTHEjoILxlsC0/exec'; // <-- misma URL o una nueva para correctivos
+// Para guardar en Drive agrega en tu Apps Script: DriveApp.getFolderById('TU_FOLDER_ID').createFile(...)
+const DB_KEY = 'eu_correctivo_v2';
+
+// ─── CATÁLOGOS ───
+const CUADRILLAS = {
+  A:[
+    {id:'6414', n:'ROSALES CAMACHO EDUARDO',         p:'Técnico Línea',    l:'L1 y L4'},
+    {id:'',     n:'COELLO HERNANDEZ CARLOS EDUARDO', p:'Técnico Línea',    l:'L2, L7, L8'},
+  ],
+  B:[
+    {id:'13643',n:'JIMENEZ CORDOVA JONATHAN',        p:'Técnico Línea',    l:'L1 y L4'},
+    {id:'',     n:'(Técnico automáticas)',            p:'Técnico Línea',    l:'Automáticas'},
+  ],
+  C:[
+    {id:'8793', n:'VELAZCO DOMINGUEZ ANGEL ALBERTO', p:'Técnico Facilities',l:'L3'},
+    {id:'1653', n:'GUERRERO RUIZ DANIEL',            p:'Técnico Línea',    l:'L1 y L4'},
+    {id:'8575', n:'SANCHEZ ZAMBRANO RAUL',           p:'Supervisor Turno', l:'L2, L7, L8'},
+    {id:'23121',n:'MARQUEZ CAZARIN JOSE ANGEL',      p:'Técnico Línea',    l:'Cizallas'},
+  ],
+  D:[
+    {id:'13074',n:'OBESO SOTO GILDARDO ERNESTO',     p:'Técnico Línea',    l:'L1 y L4'},
+    {id:'27795',n:'ALCOCER DIAZ MARIO',              p:'Técnico Línea',    l:'L2, L7, L8'},
+    {id:'19948',n:'PEREZ VAZQUEZ LORENZO',           p:'Técnico Línea',    l:'L2, L7, L8'},
+    {id:'10869',n:'GARCIA GARCIA MIGUEL',            p:'Técnico Línea',    l:'L2, L7, L8'},
+  ],
+  MTD:[
+    {id:'5514', n:'ABELAR LOPEZ DANIEL DOMINGO',     p:'Técnico Línea',    l:'L3'},
+    {id:'7801', n:'CAMARGO CRUZ ALDO SAUL',          p:'Técnico Línea',    l:'L1 y L4'},
+    {id:'5509', n:'RAMIREZ LEYVA JULIO CESAR',       p:'Técnico Línea',    l:'L3'},
+    {id:'8675', n:'HERRERA FLORES JESUS DAVID',      p:'Técnico Línea',    l:'L3'},
+    {id:'28602',n:'LAZCANO VELAZQUEZ EDSON MISAEL',  p:'Técnico Línea',    l:'—'},
+    {id:'23365',n:'CASTAÑEDA PATRON EDDWAR ALEXIS',  p:'Técnico Temporal', l:'L2, L7, L8'},
+  ],
+  MPC:[
+    {id:'',     n:'VICTOR SEPULVEDA',                p:'Supervisor Matto', l:'MP'},
+  ],
+};
+
+const MQ = {
+  L1:['Troqueladora 1','Troqueladora 2','Troqueladora 3','Transportador L1','Estación de apilado'],
+  L3:['Troqueladora 1','Troqueladora 2','Troqueladora 3','Transportador L3','Estación de apilado'],
+  L4:['Troqueladora 1','Troqueladora 2','Troqueladora 3','Transportador L4','Estación de apilado'],
+  L2:['Cizalla','Soldadora','Barnizadora','Horno','Transportador','Acuelladora','Cerradora','Hermeticidad','Cámara de Visión','Codificadora'],
+  L7:['Cizalla','Soldadora','Barnizadora','Horno','Transportador','Acuelladora','Cerradora','Hermeticidad','Cámara de Visión','Codificadora'],
+  L8:['Cizalla','Soldadora','Barnizadora','Horno','Transportador','Acuelladora','Cerradora','Hermeticidad','Cámara de Visión','Codificadora'],
+  PAL1:['Paletizador','Robot paletizador','Flejadora','Transportador salida'],
+  PAL3:['Paletizador','Robot paletizador','Flejadora','Transportador salida'],
+  PAL4:['Paletizador','Robot paletizador','Flejadora','Transportador salida'],
+  PAL72:['Paletizador','Robot paletizador','Flejadora','Transportador salida'],
+  PAL8:['Paletizador','Robot paletizador','Flejadora','Transportador salida'],
+  SRV:['Compresor','Planta de tratamiento','Sistema HVAC','Subestación','Calderas','Red neumática'],
+};
+const LL={L1:'Línea 1',L2:'Línea 2',L3:'Línea 3',L4:'Línea 4',L7:'Línea 7',L8:'Línea 8',
+  PAL1:'Paletizador L1',PAL3:'Paletizador L3',PAL4:'Paletizador L4',PAL72:'Paletizador L7y2',PAL8:'Paletizador L8',SRV:'Servicios Gles.'};
+const CP={A:'pA',B:'pB',C:'pC',D:'pD',MTD:'pMTD',MPC:'pMPC'};
+
+// ─── CAUSA RAÍZ AUTOMÁTICA POR MODO DE FALLA ───
+const CR_MAP = {
+  RUIDO:{
+    causa:'Desgaste mecánico / desbalanceo / holgura',
+    det:'El ruido o vibración anormal generalmente indica: rodamientos o bujes desgastados, desbalanceo en elementos rotativos, holgura en acoples o chavetas, o falta de lubricación. Verificar estado de rodamientos y alineación del conjunto.'
+  },
+  CALOR:{
+    causa:'Sobrecarga eléctrica / falta de refrigeración / fricción excesiva',
+    det:'El sobrecalentamiento apunta a: sobrecarga del motor por atascamiento mecánico, ventilación obstruida (filtros o rejillas tapadas), falla en sistema de refrigeración, o ajuste de protecciones incorrecto. Revisar corriente de operación vs. nominal.'
+  },
+  FUGA:{
+    causa:'Desgaste de sellos / empaques / conexiones flojas',
+    det:'Las fugas indican deterioro de empaques o sellos mecánicos por ciclos de trabajo, presión excesiva en el sistema, o apriete insuficiente en conexiones. En fugas de aceite verificar nivel y tipo de lubricante correcto.'
+  },
+  DESGASTE:{
+    causa:'Fin de vida útil del componente / falta de mantenimiento preventivo',
+    det:'El desgaste excesivo o rotura sugiere: componente que superó su vida útil sin reemplazo preventivo, material inadecuado para la aplicación, lubricación insuficiente o contaminada, o sobrecarga continua de operación.'
+  },
+  ELECTRICO:{
+    causa:'Corto circuito / sobretensión / conexión deficiente',
+    det:'La falla eléctrica puede ser: cortocircuito por aislamiento deteriorado, sobretensión en la red, falsos contactos en terminales o bornes flojos, humedad en conexiones, o falla en dispositivos de protección (fusibles, térmicos, disyuntores).'
+  },
+  ALARMA:{
+    causa:'Parámetro fuera de rango / falla en sensor o actuador',
+    det:'Un paro por alarma indica: variable de proceso fuera de setpoint (temperatura, presión, velocidad), falla o descalibración de sensor, actuador que no responde, o condición de seguridad activada. Revisar histórico de alarmas en HMI/PLC.'
+  },
+  ALINEACION:{
+    causa:'Desajuste por vibración acumulada / falta de verificación periódica',
+    det:'La desalineación o desajuste proviene de: vibración acumulada que afloja anclajes y acoples, cambios de temperatura (expansión térmica), impactos durante operación, o mantenimiento previo incompleto sin verificar alineación final.'
+  },
+  CORROSION:{
+    causa:'Exposición a agentes corrosivos / falta de protección superficial',
+    det:'La corrosión avanzada indica: exposición prolongada a humedad, ácidos o agentes de limpieza CIP, falta de recubrimiento o galvanizado, o material no adecuado para el ambiente de la planta. Evaluar cambio de material o protección con pintura epóxica.'
+  },
+  SENSOR:{
+    causa:'Contaminación del sensor / cable dañado / pérdida de referencia',
+    det:'El error de sensor o encoder apunta a: cabeza sensora sucia o desplazada, cable dañado por roce o aplastamiento, conector oxidado, pérdida de referencia cero en encoder, o interferencia electromagnética en zona de alta frecuencia.'
+  },
+  FATIGA:{
+    causa:'Carga cíclica acumulada / concentrador de esfuerzos',
+    det:'La fatiga de material ocurre por: carga cíclica que supera el límite de fatiga del material, presencia de muescas, grietas o cambios bruscos de sección que concentran esfuerzos, o material con defecto de fabricación. Revisar diseño y considerar upgrade de material.'
+  },
+};
+
+// ─── DB ───
+function loadDB(){try{return JSON.parse(localStorage.getItem(DB_KEY))||[];}catch{return[];}}
+function saveDB(d){localStorage.setItem(DB_KEY,JSON.stringify(d));}
+function nextNum(){const db=loadDB();return db.length?Math.max(...db.map(r=>r.num))+1:1;}
+function updateBadge(){document.getElementById('nextId').textContent='MC'+String(nextNum()).padStart(4,'0');}
+
+let _pendingRec=null, _pendingNumStr=null;
+let accN=0, compN=0; // declarados antes del IIFE para evitar TDZ con let
+
+// ─── INIT ───
+(function(){
+  const d=new Date();
+  document.getElementById('fecha').value=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  updateBadge(); addAcc();
+})();
+
+// ─── TABS ───
+function goTab(btn,tab){
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-'+tab).classList.add('active');
+  if(tab==='db') renderDB();
+}
+
+// ─── PROGRESO ───
+function updateProg(){
+  const s1=document.getElementById('cuadrilla').value && document.getElementById('fecha').value;
+  const s2=document.getElementById('linea').value && document.getElementById('maquina').value;
+  const s3=document.getElementById('hDeteccion').value;
+  document.getElementById('ps1').className='prog-step '+(s1?'done':'active');
+  document.getElementById('ps2').className='prog-step '+(s2?'done':s1?'active':'');
+  document.getElementById('ps3').className='prog-step '+(s3?'done':s2?'active':'');
+  document.getElementById('ps4').className='prog-step '+(s3&&s2?'active':'');
+}
+
+// ─── CUADRILLA → TÉCNICOS ───
+function onCuadrilla(){
+  const cuad=document.getElementById('cuadrilla').value;
+  const card=document.getElementById('tecCard'),list=document.getElementById('tecList');
+  if(!cuad){card.classList.remove('on');return;}
+  const tecs=CUADRILLAS[cuad]||[];
+  list.innerHTML=tecs.map((t,i)=>`
+    <label class="tec-row">
+      <input type="radio" class="tec-radio" name="tecLider" value="${t.n}" id="tec${i}">
+      <div class="tec-info">
+        <div class="tec-name">${t.n}</div>
+        <div class="tec-meta">${t.p} · ${t.l}${t.id?' · #'+t.id:''}</div>
+      </div>
+      <span class="tec-badge">${cuad}</span>
+    </label>`).join('');
+  card.classList.add('on');
+  // Auto-seleccionar primero si solo hay uno
+  if(tecs.length===1) document.getElementById('tec0').checked=true;
+}
+
+// ─── MÁQUINAS ───
+function actualizarMaquinas(){
+  const k=document.getElementById('linea').value,sel=document.getElementById('maquina');
+  sel.innerHTML='';
+  if(!k){sel.innerHTML='<option value="">— Selecciona línea primero —</option>';return;}
+  sel.innerHTML='<option value="">— Selecciona máquina —</option>';
+  (MQ[k]||[]).forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=m;sel.appendChild(o);});
+}
+
+// ─── MTBF AUTOMÁTICO desde historial ───
+function calcMtbfAuto(){
+  const linea=document.getElementById('linea').value;
+  const maq=document.getElementById('maquina').value;
+  if(!linea||!maq) return;
+  const db=loadDB();
+  // Buscar el registro más reciente del mismo equipo
+  const same=db.filter(r=>r.lineaK===linea && r.maq===maq).sort((a,b)=>b.num-a.num);
+  const el=document.getElementById('mtbfVal'), src=document.getElementById('mtbfSrc');
+  if(same.length===0){
+    el.textContent='N/D'; src.textContent='primer registro de este equipo';
+    window._mtbfAuto=null; return;
+  }
+  const last=same[0];
+  // Calcular horas entre la última falla y ahora
+  const fechaAhora=new Date();
+  let fechaUltima=new Date(last.fecha+'T'+(last.hFin||'00:00'));
+  let diffH=Math.round((fechaAhora-fechaUltima)/3600000);
+  if(diffH<0||diffH>8760) diffH=null; // sanity check
+  if(diffH!==null){
+    el.textContent=diffH+'h';
+    src.textContent='↑ auto · última falla hace '+diffH+'h';
+    window._mtbfAuto=diffH;
+  } else {
+    el.textContent='N/D'; src.textContent='datos insuficientes';
+    window._mtbfAuto=null;
+  }
+  calcMetrics();
+}
+
+// ─── CALCULAR MÉTRICAS ───
+function timeMins(t){
+  if(!t||typeof t!=='string'||!t.includes(':')) return null;
+  const parts=t.split(':').map(Number);
+  if(parts.length<2||isNaN(parts[0])||isNaN(parts[1])) return null;
+  return parts[0]*60+parts[1];
+}
+
+function calcMetrics(){
+  const hI=document.getElementById('hInicioInt').value||'';
+  const hF=document.getElementById('hFinInt').value||'';
+  const hD=document.getElementById('hDeteccion').value||'';
+  const mI=timeMins(hI), mF=timeMins(hF), mD=timeMins(hD);
+
+  // TTM = detección → fin — requiere AMBOS campos
+  let ttm=null;
+  if(mD!==null && mF!==null){
+    ttm=mF-mD;
+    if(ttm<0) ttm+=1440;
+    // sanidad: no puede superar 24h (1440 min)
+    if(ttm>1440) ttm=null;
+  }
+
+  // MTTR = inicio → fin — requiere AMBOS campos
+  let mttr=null;
+  if(mI!==null && mF!==null){
+    mttr=mF-mI;
+    if(mttr<0) mttr+=1440;
+    if(mttr>1440) mttr=null;
+  }
+
+  const mtbf=window._mtbfAuto||null;
+
+  let disp=null;
+  if(mtbf!==null && mttr!==null && mttr>0) disp=(mtbf/(mtbf+mttr/60))*100;
+
+  document.getElementById('ttmVal').textContent  = ttm!==null  ? ttm+'min'            : '—';
+  document.getElementById('mttrVal').textContent  = mttr!==null ? mttr+'min'           : '—';
+  if(!window._mtbfAuto) document.getElementById('mtbfVal').textContent = '—';
+  document.getElementById('dispVal').textContent  = disp!==null ? disp.toFixed(1)+'%' : '—';
+
+  window._mttrCalc=mttr;
+  window._ttmCalc=ttm;
+  window._dispCalc=disp;
+}
+
+// ─── CAUSA RAÍZ AUTOMÁTICA ───
+function onModoFalla(){
+  const modo=document.getElementById('modoFalla').value;
+  const box=document.getElementById('crBox');
+  if(!modo){box.classList.remove('on');return;}
+  const cr=CR_MAP[modo];
+  if(!cr){box.classList.remove('on');return;}
+  document.getElementById('crVal').textContent=cr.causa;
+  document.getElementById('crDet').textContent=cr.det;
+  box.classList.add('on');
+}
+
+// ─── ACCIONES ───
+function addAcc(){
+  accN++;
+  const list=document.getElementById('accList');
+  const d=document.createElement('div');
+  d.className='acc-item'; d.id='acc-'+accN;
+  const allTecs=Object.values(CUADRILLAS).flat().filter(t=>t.n&&!t.n.startsWith('(')).map(t=>`<option>${t.n}</option>`).join('');
+  d.innerHTML=`<div class="af">
+    <div class="acc-num">ACCIÓN #${accN}</div>
+    <textarea placeholder="Describe la acción realizada..."></textarea>
+    <div style="display:flex;gap:7px;">
+      <select style="flex:1;font-size:.8rem;padding:6px 8px;">
+        <option value="">— Técnico ejecutor —</option>${allTecs}
+      </select>
+      <input type="time" style="width:100px;font-size:.82rem;padding:6px 8px;">
+    </div>
+  </div>
+  <button class="btn-rm" onclick="document.getElementById('acc-${accN}').remove()">✕</button>`;
+  list.appendChild(d);
+}
+
+// ─── GENERAR REPORTE ───
+function generarReporte(){
+  const cuad   =document.getElementById('cuadrilla').value;
+  const fecha  =document.getElementById('fecha').value;
+  const turno  =document.getElementById('turno').value;
+  const tipoF  =document.getElementById('tipoFalla').value;
+  const lineaK =document.getElementById('linea').value;
+  const maq    =document.getElementById('maquina').value;
+  const comp   =document.getElementById('componente').value.trim();
+  const modo   =document.getElementById('modoFalla').value;
+  const hDet   =document.getElementById('hDeteccion').value;
+  const hIni   =document.getElementById('hInicioInt').value;
+  const hFin   =document.getElementById('hFinInt').value;
+  const desc   =document.getElementById('descripcion').value.trim();
+  const estado =document.getElementById('estadoCierre').value;
+  const seguim =document.getElementById('seguimiento').value;
+
+  if(!cuad||!lineaK||!maq||!hDet||!desc){
+    showToast('⚠️ Faltan datos: cuadrilla, equipo, hora de detección y descripción');return;
+  }
+
+  const tecSel=document.querySelector('input[name="tecLider"]:checked');
+  const lider =tecSel?tecSel.value:'(no seleccionado)';
+
+  const acciones=[];
+  document.querySelectorAll('.acc-item').forEach((item,i)=>{
+    const txt  =item.querySelector('textarea')?.value.trim();
+    const resp =item.querySelector('select')?.value||'';
+    const hora =item.querySelector('input[type=time]')?.value||'';
+    if(txt) acciones.push({n:i+1,txt,resp,hora});
+  });
+
+  const mttr  =window._mttrCalc||null;
+  const ttm   =window._ttmCalc||null;
+  const mtbf  =window._mtbfAuto||null;
+  const disp  =window._dispCalc||null;
+  const crData=CR_MAP[modo]||null;
+
+  const num    =nextNum();
+  const numStr ='MC'+String(num).padStart(4,'0');
+  const lineaLb=LL[lineaK]||lineaK;
+  const fechaFmt=fecha?fecha.split('-').reverse().join('/'):'—';
+  const estadoLb={CERRADO:'✅ CERRADO',TEMPORAL:'⚠️ REPARACIÓN TEMPORAL',PENDIENTE:'🔴 PENDIENTE'}[estado]||estado;
+  const seguimLb={NO:'No requiere',MP:'Programar preventivo',INSP:'Inspección seguimiento',PROV:'Cotizar refacción'}[seguim]||seguim;
+
+  _pendingRec={num,cuad,fecha,turno,tipoF,lineaK,lineaLabel:lineaLb,maq,comp,modoFalla:modo,
+    hDet,hIni,hFin,ttm,mttr,mtbf,disp,lider,desc,
+    causaRaiz:crData?crData.causa:'—',causaDetalle:crData?crData.det:'—',
+    acciones,estado,seguim};
+  _pendingNumStr=numStr;
+
+  let acStr='';
+  acciones.forEach(a=>{
+    acStr+=`  ${a.n}. ${a.txt}`;
+    if(a.resp) acStr+=` [${a.resp}]`;
+    if(a.hora) acStr+=` (${a.hora})`;
+    acStr+='\n';
+  });
+  if(!acStr) acStr='  — Sin acciones registradas —\n';
+
+  const msg=
+`🔧 MANTENIMIENTO CORRECTIVO ${numStr}
+━━━━━━━━━━━━━━━━━━━━━━━━
+🏭 ${lineaLb} · ⚙️ ${maq}${comp?' · '+comp:''}
+📅 ${fechaFmt} · ${turno||'—'}
+👥 Cuadrilla ${cuad} · 👷 ${lider}
+⚡ Falla: ${tipoF||'—'} — ${(modo?modo.toLowerCase():'—')}
+
+⏱️ TIEMPOS
+• Detección:          ${hDet||'—'}
+• Inicio intervención: ${hIni||'—'}
+• Fin / marcha:        ${hFin||'—'}
+
+📊 INDICADORES
+• MTTR:  ${mttr!=null?mttr+' min':'—'}
+• MTBF:  ${mtbf!=null?mtbf+' h':'—'}
+• Disp.: ${disp!=null?disp.toFixed(1)+'%':'—'}
+
+📋 ¿QUÉ OCURRIÓ?
+${desc}
+
+🔎 CAUSA RAÍZ (auto)
+${crData?crData.causa:'—'}
+${crData?crData.det:''}
+
+🛠️ ACCIONES REALIZADAS
+${acStr.trimEnd()}
+
+🏁 CIERRE: ${estadoLb}
+📌 Seguimiento: ${seguimLb}
+━━━━━━━━━━━━━━━━━━━━━━━━
+Envases Universales · ${numStr}`;
+
+  document.getElementById('rptMsg').textContent=msg;
+
+  const btn=document.getElementById('btnCopiar');
+  btn.classList.remove('copiado');
+  btn.textContent='📋 Copiar al portapapeles';
+  document.getElementById('confirmPanel').classList.remove('on');
+  document.getElementById('postBtns').classList.remove('on');
+
+  const wrap=document.getElementById('rptWrap');
+  wrap.classList.add('on');
+  setTimeout(()=>wrap.scrollIntoView({behavior:'smooth',block:'start'}),50);
+}
+
+// ─── COPIAR ───
+function copiarReporte(){
+  const msg=document.getElementById('rptMsg').textContent;
+  if(!msg) return;
+  const exito=()=>{
+    const btn=document.getElementById('btnCopiar');
+    btn.textContent='✅ ¡Copiado!'; btn.classList.add('copiado');
+    document.getElementById('confirmPanel').classList.add('on');
+    document.getElementById('postBtns').classList.add('on');
+    document.getElementById('postBtns').scrollIntoView({behavior:'smooth',block:'nearest'});
+    showToast('📋 Texto copiado en el portapapeles',2500);
+  };
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(msg).then(exito).catch(()=>fallbackCopy(msg,exito));
+  } else {
+    fallbackCopy(msg,exito);
+  }
+}
+function fallbackCopy(text,cb){
+  try{
+    const ta=document.createElement('textarea');
+    ta.value=text; ta.setAttribute('readonly','');
+    ta.style.cssText='position:fixed;top:0;left:0;opacity:0;pointer-events:none;';
+    document.body.appendChild(ta); ta.focus(); ta.select(); ta.setSelectionRange(0,99999);
+    const ok=document.execCommand('copy');
+    document.body.removeChild(ta);
+    if(ok) cb(); else showToast('⚠️ Copia el texto manualmente',3500);
+  }catch(e){showToast('⚠️ Copia el texto manualmente',3500);}
+}
+
+// ─── REGISTRAR Y LIMPIAR ───
+function registrarYLimpiar(){
+  if(!_pendingRec){showToast('⚠️ Genera el reporte primero');return;}
+  const db=loadDB();
+  if(db.find(r=>r.num===_pendingRec.num)){showToast('ℹ️ Ya registrado');limpiarFormulario();return;}
+  db.push(_pendingRec); saveDB(db); updateBadge();
+  enviarASheets(_pendingRec);
+  exportExcelAuto(_pendingRec,_pendingNumStr);
+  showToast(`✅ ${_pendingNumStr} registrado`,3000);
+  _pendingRec=null; _pendingNumStr=null;
+  setTimeout(limpiarFormulario,400);
+}
+
+function soloLimpiar(){
+  if(!confirm('¿Descartar este reporte sin registrarlo?')) return;
+  _pendingRec=null; _pendingNumStr=null;
+  limpiarFormulario();
+}
+
+function limpiarFormulario(){
+  document.getElementById('rptWrap').classList.remove('on');
+  ['cuadrilla','turno','tipoFalla','linea','maquina','modoFalla','estadoCierre','seguimiento']
+    .forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['componente','descripcion'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['hDeteccion','hInicioInt','hFinInt'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('maquina').innerHTML='<option value="">— Selecciona línea primero —</option>';
+  document.getElementById('accList').innerHTML='';
+  document.getElementById('tecCard').classList.remove('on');
+  document.getElementById('tecList').innerHTML='';
+  document.getElementById('crBox').classList.remove('on');
+  ['mttrVal','mtbfVal','ttmVal','dispVal'].forEach(id=>document.getElementById(id).textContent='—');
+  document.getElementById('mtbfSrc').textContent='desde historial';
+  window._mtbfAuto=null; window._mttrCalc=null; window._ttmCalc=null; window._dispCalc=null;
+  accN=0; addAcc();
+  const d=new Date();
+  document.getElementById('fecha').value=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  updateBadge(); updateProg();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ─── HISTORIAL ───
+function renderDB(){
+  const db=loadDB().sort((a,b)=>b.num-a.num);
+  const body=document.getElementById('dbBody'), empty=document.getElementById('emptyMsg');
+  document.getElementById('dbTotal').textContent=db.length+' registro'+(db.length!==1?'s':'');
+  renderKPIs(db); body.innerHTML='';
+  if(!db.length){empty.style.display='block';return;}
+  empty.style.display='none';
+  db.forEach(r=>{
+    const tr=document.createElement('tr');
+    const fd=r.fecha?r.fecha.split('-').reverse().join('/'):'—';
+    const pill=CP[r.cuad]||'pA';
+    const eLb={CERRADO:'✅',TEMPORAL:'⚠️',PENDIENTE:'🔴'}[r.estado]||'—';
+    const liderShort=(r.lider||'—').split(' ').slice(0,2).join(' ');
+    tr.innerHTML=`
+      <td class="idc">MC${String(r.num).padStart(4,'0')}</td>
+      <td>${fd}</td>
+      <td><span class="pill ${pill}">C.${r.cuad}</span></td>
+      <td style="font-size:.7rem;">${liderShort}</td>
+      <td>${r.lineaLabel||'—'}</td>
+      <td style="font-size:.7rem;">${r.maq||'—'}</td>
+      <td style="font-size:.7rem;">${r.tipoF||'—'}</td>
+      <td style="color:var(--red);font-family:'Barlow Semi Condensed',sans-serif;">${r.mttr!=null?r.mttr+'m':'—'}</td>
+      <td style="color:var(--green);font-family:'Barlow Semi Condensed',sans-serif;">${r.mtbf!=null?r.mtbf+'h':'—'}</td>
+      <td style="color:var(--amber);font-family:'Barlow Semi Condensed',sans-serif;">${r.disp!=null?parseFloat(r.disp).toFixed(1)+'%':'—'}</td>
+      <td>${eLb}</td>
+      <td><button class="del-btn" onclick="delRec(${r.num})">🗑</button></td>`;
+    body.appendChild(tr);
+  });
+}
+
+function renderKPIs(db){
+  const bar=document.getElementById('kpiBar');
+  if(!db.length){bar.innerHTML='';return;}
+  const mttrArr=db.filter(r=>r.mttr!=null).map(r=>+r.mttr);
+  const mtbfArr=db.filter(r=>r.mtbf!=null).map(r=>+r.mtbf);
+  const dispArr=db.filter(r=>r.disp!=null).map(r=>+r.disp);
+  const avg=a=>a.length?(a.reduce((s,v)=>s+v,0)/a.length):null;
+  const aMttr=avg(mttrArr), aMtbf=avg(mtbfArr), aDisp=avg(dispArr);
+  bar.innerHTML=`
+    <div class="kpi-chip total"><div class="kv">${db.length}</div><div class="kl">Correctivos</div></div>
+    <div class="kpi-chip mttr"><div class="kv">${aMttr!=null?aMttr.toFixed(0)+'m':'—'}</div><div class="kl">MTTR prom.</div></div>
+    <div class="kpi-chip mtbf"><div class="kv">${aMtbf!=null?aMtbf.toFixed(0)+'h':'—'}</div><div class="kl">MTBF prom.</div></div>
+    <div class="kpi-chip disp"><div class="kv">${aDisp!=null?aDisp.toFixed(1)+'%':'—'}</div><div class="kl">Disp. prom.</div></div>`;
+}
+
+function delRec(num){
+  if(!confirm(`¿Eliminar MC${String(num).padStart(4,'0')}?`))return;
+  saveDB(loadDB().filter(r=>r.num!==num)); renderDB(); updateBadge(); showToast('Registro eliminado');
+}
+function limpiarDB(){
+  if(!confirm('¿Borrar TODA la base de datos de correctivos?'))return;
+  localStorage.removeItem(DB_KEY); renderDB(); updateBadge(); showToast('Base limpiada');
+}
+
+// ─── EXCEL ───
+function exportExcelAuto(rec,numStr){exportExcel(rec,numStr,true);}
+function exportExcel(autoRec,autoNumStr,isAuto){
+  const db=loadDB().sort((a,b)=>a.num-b.num);
+  if(!db.length){showToast('Sin datos para exportar');return;}
+  const hdr=['MC#','Fecha','Cuadrilla','Turno','Técnico Líder','Línea','Equipo','Componente',
+    'Tipo Falla','Modo Falla','H.Detección','H.Inicio','H.Fin','TTM(min)','MTTR(min)','MTBF(h)','Disp(%)',
+    'Descripción','Causa Raíz','Causa Detalle','Acciones','Estado','Seguimiento'];
+  const rows=db.map(r=>[
+    'MC'+String(r.num).padStart(4,'0'),
+    r.fecha?r.fecha.split('-').reverse().join('/'):'',
+    r.cuad||'',r.turno||'',r.lider||'',r.lineaLabel||'',r.maq||'',r.comp||'',
+    r.tipoF||'',r.modoFalla||'',r.hDet||'',r.hIni||'',r.hFin||'',
+    r.ttm!=null?r.ttm:'',r.mttr!=null?r.mttr:'',r.mtbf!=null?r.mtbf:'',
+    r.disp!=null?parseFloat(r.disp).toFixed(1):'',
+    r.desc||'',r.causaRaiz||'',r.causaDetalle||'',
+    (r.acciones||[]).map(a=>`${a.n}. ${a.txt}${a.resp?' ['+a.resp+']':''}${a.hora?' ('+a.hora+')':''}`).join(' | '),
+    r.estado||'',r.seguim||''
+  ]);
+  const ws=XLSX.utils.aoa_to_sheet([hdr,...rows]);
+  ws['!cols']=hdr.map((_,i)=>({wch:[10,12,10,10,22,10,16,18,12,14,10,10,10,8,8,8,8,50,30,50,60,12,20][i]||14}));
+  hdr.forEach((_,i)=>{
+    const c=XLSX.utils.encode_cell({r:0,c:i});if(!ws[c])return;
+    ws[c].s={fill:{fgColor:{rgb:'060A14'}},font:{bold:true,color:{rgb:'38BDF8'},sz:9},
+      alignment:{horizontal:'center',wrapText:true}};
+  });
+  rows.forEach((_,ri)=>{
+    hdr.forEach((__,ci)=>{
+      const c=XLSX.utils.encode_cell({r:ri+1,c:ci});if(!ws[c])return;
+      ws[c].s={fill:{fgColor:{rgb:ri%2===0?'FFFFFF':'F0F4F8'}},alignment:{vertical:'top',wrapText:true},font:{sz:9}};
+    });
+  });
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,'Correctivos',ws);
+  const d=new Date(),ds=d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');
+  XLSX.writeFile(wb,isAuto?`Correctivo_MC${String(autoRec?.num||0).padStart(4,'0')}_${ds}.xlsx`:`Correctivos_${ds}.xlsx`);
+  if(!isAuto) showToast('📥 Excel descargado');
+}
+
+// ─── GOOGLE SHEETS + DRIVE ───
+function enviarASheets(rec){
+  if(!SHEETS_URL) return;
+  const payload={
+    tipo:'CORRECTIVO',
+    mc:'MC'+String(rec.num).padStart(4,'0'),
+    fecha:rec.fecha?rec.fecha.split('-').reverse().join('/'):'',
+    cuadrilla:rec.cuad||'', turno:rec.turno||'', lider:rec.lider||'',
+    linea:rec.lineaLabel||'', maquina:rec.maq||'', componente:rec.comp||'',
+    tipoFalla:rec.tipoF||'', modoFalla:rec.modoFalla||'',
+    hDeteccion:rec.hDet||'', hInicio:rec.hIni||'', hFin:rec.hFin||'',
+    ttm:rec.ttm!=null?rec.ttm:'', mttr:rec.mttr!=null?rec.mttr:'',
+    mtbf:rec.mtbf!=null?rec.mtbf:'',
+    disponibilidad:rec.disp!=null?parseFloat(rec.disp).toFixed(1):'',
+    descripcion:rec.desc||'', causaRaiz:rec.causaRaiz||'', causaDetalle:rec.causaDetalle||'',
+    acciones:(rec.acciones||[]).map(a=>`${a.n}. ${a.txt}${a.resp?' ['+a.resp+']':''}${a.hora?' ('+a.hora+')':''}`).join(' | '),
+    estado:rec.estado||'', seguimiento:rec.seguim||'',
+    reporteTexto: document.getElementById('rptMsg')?.textContent||'',
+    timestamp:new Date().toISOString()
+  };
+  // Mismo método que reporte de paros: POST sin headers extra + GET de respaldo
+  fetch(SHEETS_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(payload)}).catch(()=>{});
+  // GET de respaldo (compatible con doGet en Apps Script)
+  try{
+    const p=new URLSearchParams(Object.fromEntries(
+      Object.entries(payload).map(([k,v])=>[k,String(v).slice(0,300)])
+    ));
+    fetch(SHEETS_URL+'?'+p.toString(),{method:'GET',mode:'no-cors'}).catch(()=>{});
+  }catch(e){}
+}
+
+// ─── TOAST ───
+function showToast(msg,ms=2700){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('on');
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('on'),ms);
+}
+function closeLB(){document.getElementById('lb').classList.remove('on');}
+</script>
+
+
+
+
+<!-- 
+=================================================================
+APPS SCRIPT — INSTRUCCIONES DE CONFIGURACIÓN
+=================================================================
+1. Ve a https://script.google.com → Nuevo proyecto
+2. Borra el código existente y pega TODO lo de abajo
+3. Reemplaza SHEET_ID y FOLDER_ID con los IDs reales
+4. Menú: Implementar → Nueva implementación
+   - Tipo: Aplicación web
+   - Ejecutar como: Yo
+   - Quién tiene acceso: Cualquier usuario
+5. Copia la URL de implementación
+6. Pégala en la variable SHEETS_URL arriba en este HTML
+=================================================================
+
+// ──────────────────────────────────────────────────────────────
+// CONFIGURA ESTOS DOS VALORES:
+const SHEET_ID  = 'TU_SPREADSHEET_ID';   // ID de tu Google Sheet
+const FOLDER_ID = 'TU_FOLDER_DRIVE_ID';  // ID de carpeta en Drive
+// ──────────────────────────────────────────────────────────────
+
+function doPost(e) {
+  try {
+    var raw = e.postData ? e.postData.contents : '';
+    var data = {};
+    try { data = JSON.parse(raw); } catch(err) { data = e.parameter || {}; }
+    return procesarDatos(data);
+  } catch(err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({status:'error', msg: err.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet(e) {
+  try {
+    var data = e.parameter || {};
+    return procesarDatos(data);
+  } catch(err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({status:'error', msg: err.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function procesarDatos(data) {
+  // 1. Guardar en Google Sheets
+  guardarEnSheet(data);
+
+  // 2. Guardar archivo de texto en Drive (si hay texto del reporte)
+  if (data.reporteTexto && data.reporteTexto.length > 10) {
+    guardarEnDrive(data);
+  }
+
+  return ContentService
+    .createTextOutput(JSON.stringify({status:'ok', mc: data.mc || ''}))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function guardarEnSheet(data) {
+  var ss     = SpreadsheetApp.openById(SHEET_ID);
+  var nombre = data.tipo === 'CORRECTIVO' ? 'Correctivos' : 'Paros';
+  var sh     = ss.getSheetByName(nombre);
+
+  // Crear hoja si no existe
+  if (!sh) {
+    sh = ss.insertSheet(nombre);
+  }
+
+  // Crear encabezados si la hoja está vacía
+  if (sh.getLastRow() === 0) {
+    if (data.tipo === 'CORRECTIVO') {
+      sh.appendRow([
+        'MC#','Fecha','Cuadrilla','Turno','Técnico Líder',
+        'Línea','Equipo','Componente','Tipo Falla','Modo Falla',
+        'H. Detección','H. Inicio','H. Fin',
+        'TTM (min)','MTTR (min)','MTBF (h)','Disponibilidad (%)',
+        'Descripción','Causa Raíz','Causa Detalle',
+        'Acciones','Estado','Seguimiento','Timestamp'
+      ]);
+      // Formato encabezado
+      var hdr = sh.getRange(1, 1, 1, 24);
+      hdr.setBackground('#060A14');
+      hdr.setFontColor('#38BDF8');
+      hdr.setFontWeight('bold');
+      sh.setFrozenRows(1);
+    } else {
+      sh.appendRow([
+        '#','Clave','Fecha','Cuadrilla','Turno','Línea','Máquina',
+        'H. Inicio','H. Fin Acciones','H. Puesta Marcha',
+        'Tiempo Muerto','Mins Muertos','Problema','Acciones',
+        'Técnico','Timestamp'
+      ]);
+      var hdr2 = sh.getRange(1, 1, 1, 16);
+      hdr2.setBackground('#09090B');
+      hdr2.setFontColor('#F59E0B');
+      hdr2.setFontWeight('bold');
+      sh.setFrozenRows(1);
+    }
+  }
+
+  // Agregar fila de datos
+  var row;
+  if (data.tipo === 'CORRECTIVO') {
+    row = [
+      data.mc            || '',
+      data.fecha         || '',
+      data.cuadrilla     || '',
+      data.turno         || '',
+      data.lider         || '',
+      data.linea         || '',
+      data.maquina       || '',
+      data.componente    || '',
+      data.tipoFalla     || '',
+      data.modoFalla     || '',
+      data.hDeteccion    || '',
+      data.hInicio       || '',
+      data.hFin          || '',
+      data.ttm           || '',
+      data.mttr          || '',
+      data.mtbf          || '',
+      data.disponibilidad|| '',
+      data.descripcion   || '',
+      data.causaRaiz     || '',
+      data.causaDetalle  || '',
+      data.acciones      || '',
+      data.estado        || '',
+      data.seguimiento   || '',
+      data.timestamp     || new Date().toISOString()
+    ];
+  } else {
+    row = [
+      data.num           || '',
+      data.clave         || '',
+      data.fecha         || '',
+      data.cuadrilla     || '',
+      data.turno         || '',
+      data.linea         || '',
+      data.maquina       || '',
+      data.hInicio       || '',
+      data.hFinAcciones  || '',
+      data.hPuestaMarcha || '',
+      data.tiempoMuerto  || '',
+      data.minutosMuertos|| '',
+      data.problema      || '',
+      data.acciones      || '',
+      data.tecnico       || '',
+      data.timestamp     || new Date().toISOString()
+    ];
+  }
+
+  sh.appendRow(row);
+
+  // Alternar color de filas para legibilidad
+  var lastRow = sh.getLastRow();
+  var numCols = row.length;
+  var color   = (lastRow % 2 === 0) ? '#F0F4F8' : '#FFFFFF';
+  sh.getRange(lastRow, 1, 1, numCols).setBackground(color);
+}
+
+function guardarEnDrive(data) {
+  try {
+    var folder  = DriveApp.getFolderById(FOLDER_ID);
+    var fecha   = data.fecha   ? data.fecha.replace(/\//g, '-') : 'sin-fecha';
+    var clave   = data.mc      || data.clave || 'reporte';
+    var nombre  = clave + '_' + fecha + '.txt';
+    var contenido = data.reporteTexto || JSON.stringify(data, null, 2);
+
+    // Evitar duplicados: buscar si ya existe
+    var existentes = folder.getFilesByName(nombre);
+    if (existentes.hasNext()) {
+      // Actualizar en lugar de duplicar
+      existentes.next().setContent(contenido);
+    } else {
+      folder.createFile(nombre, contenido, MimeType.PLAIN_TEXT);
+    }
+  } catch(err) {
+    // No interrumpir si Drive falla
+    Logger.log('Drive error: ' + err.toString());
+  }
+}
+=================================================================
+-->
+
+</body>
+</html>
