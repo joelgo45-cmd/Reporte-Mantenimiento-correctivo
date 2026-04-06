@@ -3,1080 +3,1133 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Correctivo · Envases Universales</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&family=Barlow+Semi+Condensed:wght@500;600&display=swap" rel="stylesheet">
+<title>Reporte de Falla · Envases Universales</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-:root{
-  --bg:#09090b;--s1:#0f1117;--s2:#16181f;--s3:#1c1e27;
-  --border:#252830;--border2:#32364a;
-  --accent:#38bdf8;--accent2:#0ea5e9;
-  --red:#f87171;--green:#4ade80;--amber:#fbbf24;--purple:#a78bfa;
-  --text:#e8eaf0;--muted:#6b7280;--label:#9ca3af;--r:10px;
-}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html,body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh;}
+:root{
+  --bg:#08080f;--card:#0f0f1a;--card2:#13131f;
+  --border:#1c1c2e;--border2:#26263a;
+  --accent:#f97316;--accent2:#ea580c;
+  --blue:#3b82f6;--green:#22c55e;--red:#ef4444;--amber:#f59e0b;--purple:#a78bfa;
+  --text:#f0f0f5;--sub:#6b7280;--label:#9ca3af;
+  --inp:#111120;--inp-b:#1e1e30;
+}
+html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
 
-.nav{display:flex;background:var(--s1);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:300;}
-.nav-btn{flex:1;padding:12px 4px;background:none;border:none;color:var(--muted);
-  font-family:'Barlow Condensed',sans-serif;font-size:.78rem;font-weight:700;
-  letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
+/* NAV */
+.nav{display:flex;background:var(--card);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:400;}
+.nb{flex:1;padding:11px 4px;background:none;border:none;color:var(--sub);
+  font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:600;cursor:pointer;
   border-bottom:2px solid transparent;transition:color .15s,border-color .15s;}
-.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
-.panel{display:none;}.panel.active{display:block;}
+.nb.act{color:var(--accent);border-bottom-color:var(--accent);}
+.panel{display:none;}.panel.act{display:block;}
 
-.hdr{background:linear-gradient(135deg,#060a14,#0c1422,#060a14);
-  border-bottom:2px solid var(--accent2);padding:14px 16px;display:flex;align-items:center;gap:12px;}
-.hdr-icon{font-size:1.8rem;}
-.hdr h1{font-family:'Barlow Condensed',sans-serif;font-size:1.25rem;font-weight:800;
-  color:var(--accent);letter-spacing:.04em;text-transform:uppercase;line-height:1.1;}
-.hdr p{font-size:.63rem;color:rgba(56,189,248,.5);letter-spacing:.1em;text-transform:uppercase;margin-top:2px;}
-.hdr-badge{margin-left:auto;background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2);
-  border-radius:8px;padding:5px 10px;text-align:center;flex-shrink:0;}
-.hdr-badge .n{font-family:'Barlow Condensed',sans-serif;font-size:1.4rem;font-weight:800;color:var(--accent);line-height:1;}
-.hdr-badge .l{font-size:.55rem;color:rgba(56,189,248,.5);letter-spacing:.1em;text-transform:uppercase;}
+/* HEADER */
+.hdr{padding:16px;border-bottom:1px solid var(--border);
+  background:linear-gradient(180deg,#0d0d1c 0%,var(--bg) 100%);
+  display:flex;align-items:center;gap:12px;}
+.hdr-ic{width:42px;height:42px;border-radius:11px;flex-shrink:0;
+  background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.22);
+  display:flex;align-items:center;justify-content:center;font-size:1.25rem;}
+.hdr h1{font-size:1rem;font-weight:700;letter-spacing:-.01em;}
+.hdr p{font-size:.65rem;color:var(--sub);margin-top:1px;}
+.folio-badge{margin-left:auto;flex-shrink:0;
+  font-family:'DM Mono',monospace;font-size:.8rem;font-weight:500;color:var(--accent);
+  background:rgba(249,115,22,.08);border:1px solid rgba(249,115,22,.18);
+  border-radius:7px;padding:5px 10px;}
 
-/* PROGRESO */
-.prog-bar{display:flex;gap:0;background:var(--s1);border-bottom:1px solid var(--border);padding:8px 14px;gap:6px;max-width:680px;margin:0 auto;}
-.prog-step{flex:1;height:3px;border-radius:2px;background:var(--border2);transition:background .3s;}
-.prog-step.done{background:var(--accent);}
-.prog-step.active{background:var(--accent2);}
+/* WRAP */
+.wrap{max-width:560px;margin:0 auto;padding:16px 13px 90px;}
 
-.fw{max-width:680px;margin:0 auto;padding:12px 12px 80px;}
-.sec{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:12px;}
-.sec-hd{font-family:'Barlow Condensed',sans-serif;font-size:.72rem;font-weight:700;
-  letter-spacing:.16em;text-transform:uppercase;color:var(--accent);
-  margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-.sec-hd::after{content:'';flex:1;height:1px;background:var(--border);}
-.sec-hd .sec-n{background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.2);
-  border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;
-  font-size:.68rem;font-weight:800;color:var(--accent);flex-shrink:0;}
+/* SECCIÓN */
+.sec{background:var(--card);border:1px solid var(--border);border-radius:14px;
+  margin-bottom:10px;overflow:hidden;}
+.sec-hd{display:flex;align-items:center;gap:10px;padding:13px 14px 10px;
+  border-bottom:1px solid var(--border);}
+.sec-hd .ico{font-size:1.1rem;}
+.sec-hd .tit{font-size:.8rem;font-weight:700;color:var(--text);letter-spacing:-.01em;}
+.sec-hd .sub{font-size:.65rem;color:var(--sub);margin-top:1px;}
+.sec-hd .done-mark{margin-left:auto;font-size:.85rem;color:var(--green);opacity:0;transition:opacity .2s;}
+.sec.done .done-mark{opacity:1;}
+.sec.done{border-color:rgba(34,197,94,.25);}
+.sec-body{padding:13px 14px 14px;display:flex;flex-direction:column;gap:10px;}
 
 /* INPUTS */
-label{display:block;font-size:.72rem;color:var(--label);margin-bottom:3px;margin-top:10px;font-weight:500;}
-label:first-of-type{margin-top:0;}
-.q-label{font-size:.84rem;color:var(--text);font-weight:600;margin-bottom:6px;margin-top:12px;line-height:1.4;}
-.q-label:first-of-type{margin-top:0;}
-.q-hint{font-size:.7rem;color:var(--muted);margin-bottom:6px;margin-top:-2px;}
-input[type=text],input[type=time],input[type=date],input[type=number],select,textarea{
-  width:100%;background:var(--s2);border:1px solid var(--border);border-radius:8px;
-  color:var(--text);font-family:'Barlow',sans-serif;font-size:.88rem;
-  padding:9px 11px;outline:none;appearance:none;
-  transition:border-color .15s,box-shadow .15s;}
-input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(56,189,248,.1);}
-input[type=time]{font-family:'Barlow Semi Condensed',sans-serif;font-size:.92rem;letter-spacing:.04em;}
-textarea{resize:vertical;min-height:64px;line-height:1.5;}
-select option{background:var(--s2);}
+.lbl{font-size:.68rem;font-weight:600;color:var(--label);letter-spacing:.06em;
+  text-transform:uppercase;margin-bottom:4px;display:block;}
+.q{font-size:.84rem;font-weight:600;color:var(--text);margin-bottom:5px;}
+.hint{font-size:.7rem;color:var(--sub);margin-top:-3px;margin-bottom:5px;line-height:1.4;}
+
+input[type=text],input[type=number],select,textarea{
+  width:100%;background:var(--inp);border:1.5px solid var(--inp-b);
+  border-radius:9px;color:var(--text);font-family:'DM Sans',sans-serif;
+  font-size:.87rem;padding:9px 11px;outline:none;appearance:none;
+  transition:border-color .15s;}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);}
+select option{background:#111120;}
+textarea{resize:vertical;line-height:1.5;}
+input[type=time]{
+  width:100%;background:var(--inp);border:1.5px solid var(--inp-b);
+  border-radius:9px;color:var(--text);font-family:'DM Mono',monospace;
+  font-size:1.05rem;font-weight:500;padding:9px 11px;outline:none;
+  -webkit-appearance:none;transition:border-color .15s;}
+input[type=time]:focus{border-color:var(--accent);}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;}
 
-/* TÉCNICOS */
-@keyframes sli{from{opacity:0;transform:translateY(-5px);}to{opacity:1;transform:none;}}
-.tec-card{background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:8px 11px;margin-top:8px;display:none;}
-.tec-card.on{display:block;animation:sli .2s ease;}
-.tec-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-bottom:1px solid var(--border);cursor:pointer;}
-.tec-row:last-child{border-bottom:none;padding-bottom:2px;}
-.tec-row:hover{background:rgba(56,189,248,.04);border-radius:6px;}
-.tec-radio{accent-color:var(--accent);width:17px;height:17px;flex-shrink:0;cursor:pointer;}
-.tec-info{flex:1;}
-.tec-name{font-size:.83rem;font-weight:600;color:var(--text);}
-.tec-meta{font-size:.64rem;color:var(--muted);margin-top:1px;}
-.tec-badge{font-family:'Barlow Condensed',sans-serif;font-size:.64rem;font-weight:700;
-  background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.18);
-  border-radius:4px;padding:2px 6px;color:var(--accent);white-space:nowrap;}
+/* CHIPS */
+.chips{display:flex;flex-wrap:wrap;gap:7px;}
+.chip{background:var(--inp);border:1.5px solid var(--inp-b);
+  border-radius:8px;padding:7px 12px;font-size:.82rem;font-weight:500;
+  color:var(--label);cursor:pointer;transition:all .14s;user-select:none;}
+.chip:active{transform:scale(.97);}
+.chip.sel{background:rgba(249,115,22,.1);border-color:var(--accent);
+  color:var(--accent);font-weight:600;}
+.chip.sel-blue{background:rgba(59,130,246,.1);border-color:var(--blue);color:var(--blue);font-weight:600;}
+.chip.sel-red{background:rgba(239,68,68,.1);border-color:var(--red);color:var(--red);font-weight:600;}
+.chip.sel-amber{background:rgba(245,158,11,.1);border-color:var(--amber);color:var(--amber);font-weight:600;}
+.chip.sel-green{background:rgba(34,197,94,.1);border-color:var(--green);color:var(--green);font-weight:600;}
+.chip.sel-purple{background:rgba(167,139,250,.1);border-color:var(--purple);color:var(--purple);font-weight:600;}
 
-/* MÉTRICAS CALCULADAS */
-.met-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
-.met-card{background:var(--s3);border:1px solid var(--border2);border-radius:9px;padding:10px 12px;text-align:center;}
-.met-v{font-family:'Barlow Condensed',sans-serif;font-size:1.5rem;font-weight:800;line-height:1;}
-.met-u{font-size:.62rem;color:var(--muted);margin-top:1px;}
-.met-l{font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--label);margin-top:5px;font-weight:600;}
-.met-card.mttr .met-v{color:var(--red);}
-.met-card.mtbf .met-v{color:var(--green);}
-.met-card.ttm  .met-v{color:var(--accent);}
-.met-card.disp .met-v{color:var(--amber);}
-.met-auto{font-size:.62rem;color:var(--green);margin-top:2px;}
+/* sub-chips de máquina */
+.sub-chips{display:none;padding-top:7px;}
+.sub-chips.on{display:flex;flex-wrap:wrap;gap:6px;animation:fd .2s ease;}
 
-/* CAUSA RAÍZ AUTO */
-.cr-box{background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.2);
-  border-radius:9px;padding:11px 13px;margin-top:10px;display:none;animation:sli .25s ease;}
-.cr-box.on{display:block;}
-.cr-tag{font-family:'Barlow Condensed',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--purple);margin-bottom:5px;display:flex;align-items:center;gap:6px;}
-.cr-val{font-size:.84rem;font-weight:600;color:var(--text);margin-bottom:4px;}
-.cr-det{font-size:.78rem;color:var(--label);line-height:1.55;}
+/* PRIORIDAD con colores */
+.prior-chips .chip[data-p="URGENTE"]{color:#fca5a5;}
+.prior-chips .chip[data-p="ALTA"]{color:#fdba74;}
+.prior-chips .chip[data-p="MEDIA"]{color:#fde68a;}
+.prior-chips .chip[data-p="BAJA"]{color:#86efac;}
 
-/* ACCIONES RÁPIDAS */
-.acc-list{display:flex;flex-direction:column;gap:8px;}
-.acc-item{background:var(--s2);border:1px solid var(--border);border-radius:9px;
-  padding:10px 11px;display:grid;grid-template-columns:1fr auto;gap:7px;animation:sli .2s ease;}
-.acc-item .af{display:flex;flex-direction:column;gap:6px;flex:1;}
-.acc-num{font-family:'Barlow Condensed',sans-serif;font-size:.76rem;font-weight:700;color:var(--accent);letter-spacing:.08em;}
-.acc-item textarea{background:var(--s3);border-color:transparent;padding:7px 8px;font-size:.82rem;min-height:44px;}
-.acc-item textarea:focus{border-color:var(--accent);background:var(--s2);}
-.btn-rm{background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer;
-  padding:3px 5px;border-radius:4px;transition:color .15s;align-self:flex-start;}
-.btn-rm:hover{color:var(--red);}
+/* KPIs calculados */
+.kpi-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.kpi-card{background:var(--card2);border:1px solid var(--border2);
+  border-radius:10px;padding:10px 12px;text-align:center;}
+.kpi-v{font-family:'DM Mono',monospace;font-size:1.3rem;font-weight:500;line-height:1;}
+.kpi-u{font-size:.6rem;color:var(--sub);margin-top:1px;}
+.kpi-l{font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--label);margin-top:5px;}
+.kpi-card.mttr .kpi-v{color:var(--red);}
+.kpi-card.down .kpi-v{color:var(--amber);}
 
-/* BOTONES */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;
-  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.86rem;
-  letter-spacing:.08em;text-transform:uppercase;border:none;cursor:pointer;
-  border-radius:9px;padding:10px 18px;transition:all .15s;}
-.btn-primary{background:var(--accent);color:#000;width:100%;font-size:.98rem;
-  padding:14px;border-radius:10px;margin-top:6px;box-shadow:0 4px 20px rgba(56,189,248,.22);}
-.btn-primary:hover{background:var(--accent2);transform:translateY(-1px);}
-.btn-add{background:rgba(56,189,248,.07);color:var(--accent);border:1px solid rgba(56,189,248,.18);margin-top:8px;font-size:.8rem;padding:8px 14px;}
-.btn-add:hover{background:rgba(56,189,248,.13);}
-.btn-export{background:var(--s3);color:var(--text);border:1px solid var(--border2);padding:9px 16px;}
-.btn-export:hover{border-color:var(--accent);color:var(--accent);}
-.btn-danger{background:rgba(248,113,113,.08);color:var(--red);border:1px solid rgba(248,113,113,.2);padding:9px 16px;}
+/* INFO MTBF */
+.mtbf-info{background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.15);
+  border-radius:9px;padding:10px 12px;}
+.mtbf-info .v{font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:500;color:var(--green);}
+.mtbf-info .l{font-size:.65rem;color:var(--sub);margin-top:2px;}
 
-/* PANEL RESULTADO */
-.rpt-wrap{display:none;margin-top:14px;}
-.rpt-wrap.on{display:flex;flex-direction:column;gap:11px;animation:sli .3s ease;}
-.rpt-box{background:var(--s2);border:1px solid var(--border2);border-radius:12px;overflow:hidden;}
-.rpt-box-hd{background:var(--s3);border-bottom:1px solid var(--border);
-  padding:9px 13px;font-family:'Barlow Condensed',sans-serif;font-size:.7rem;
-  font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--label);}
-.rpt-pre{white-space:pre-wrap;word-break:break-word;font-family:'Barlow',sans-serif;
-  font-size:.8rem;line-height:1.68;color:var(--text);padding:13px 14px 15px;}
-.btn-copiar{background:rgba(74,222,128,.1);color:var(--green);
-  border:2px solid rgba(74,222,128,.28);width:100%;font-size:1rem;
-  padding:15px;border-radius:12px;font-family:'Barlow Condensed',sans-serif;
-  font-weight:800;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;gap:9px;transition:all .15s;}
-.btn-copiar:hover{background:rgba(74,222,128,.18);}
-.btn-copiar.copiado{background:rgba(74,222,128,.22);border-color:var(--green);pointer-events:none;}
-.confirm-panel{display:none;background:rgba(74,222,128,.05);
-  border:1px solid rgba(74,222,128,.2);border-radius:12px;
-  padding:14px 16px;text-align:center;animation:sli .3s ease;}
-.confirm-panel.on{display:block;}
-.confirm-badge{font-family:'Barlow Condensed',sans-serif;font-size:1.05rem;
-  font-weight:800;color:var(--green);letter-spacing:.06em;margin-bottom:5px;}
-.confirm-hint{font-size:.76rem;color:var(--muted);line-height:1.5;}
+/* ESTADO FINAL chips */
+.estado-chips .chip{padding:9px 14px;}
 
-/* Botones de acción post-copia */
-.post-btns{display:none;flex-direction:column;gap:9px;}
-.post-btns.on{display:flex;animation:sli .3s ease;}
-.btn-registrar{background:var(--accent);color:#000;width:100%;font-size:.96rem;
-  padding:14px;border-radius:10px;font-family:'Barlow Condensed',sans-serif;
-  font-weight:800;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;gap:9px;
-  box-shadow:0 4px 18px rgba(56,189,248,.22);border:none;transition:all .15s;}
-.btn-registrar:hover{background:var(--accent2);}
-.btn-nuevo{background:rgba(255,255,255,.04);color:var(--muted);width:100%;font-size:.86rem;
-  padding:12px;border-radius:9px;font-family:'Barlow Condensed',sans-serif;
-  font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
-  border:1px solid var(--border);transition:all .15s;}
-.btn-nuevo:hover{border-color:var(--accent);color:var(--accent);}
+/* firmas */
+.firma-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.firma-box{background:var(--inp);border:1.5px solid var(--inp-b);border-radius:9px;
+  padding:10px;text-align:center;min-height:64px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:4px;cursor:pointer;transition:border-color .15s;}
+.firma-box:hover{border-color:var(--accent);}
+.firma-box.signed{border-color:var(--green);background:rgba(34,197,94,.05);}
+.firma-box .fi{font-size:1.2rem;}
+.firma-box .fn{font-size:.72rem;color:var(--sub);}
+.firma-box.signed .fn{color:var(--green);}
+
+/* BTN GENERAR */
+.btn-gen{width:100%;padding:15px;border:none;border-radius:12px;
+  background:var(--accent);color:#fff;
+  font-family:'DM Sans',sans-serif;font-size:.96rem;font-weight:700;
+  cursor:pointer;margin-top:6px;display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 6px 22px rgba(249,115,22,.28);transition:all .15s;}
+.btn-gen:hover{background:var(--accent2);transform:translateY(-1px);}
+.btn-gen:active{transform:scale(.98);}
+
+/* RESULTADO */
+.result{display:none;margin-top:12px;}
+.result.on{display:flex;flex-direction:column;gap:10px;animation:fd .3s ease;}
+@keyframes fd{from{opacity:0;transform:translateY(-5px);}to{opacity:1;transform:none;}}
+
+.msg-box{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.msg-hd{background:#0d1a10;border-bottom:1px solid #1a2e1a;
+  padding:8px 13px;font-size:.64rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:#4ade80;display:flex;align-items:center;gap:6px;}
+.msg-pre{white-space:pre-wrap;word-break:break-word;
+  font-family:'DM Mono',monospace;font-size:.76rem;line-height:1.65;
+  color:var(--text);padding:13px 14px;}
+
+.btn-copy{width:100%;padding:14px;border:2px solid rgba(34,197,94,.3);border-radius:12px;
+  background:rgba(34,197,94,.07);color:#4ade80;
+  font-family:'DM Sans',sans-serif;font-size:.94rem;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .15s;}
+.btn-copy.done{background:rgba(34,197,94,.18);border-color:#4ade80;pointer-events:none;}
+.btn-copy:not(.done):hover{background:rgba(34,197,94,.14);}
+
+.confirm-box{display:none;background:rgba(34,197,94,.05);
+  border:1px solid rgba(34,197,94,.18);border-radius:12px;
+  padding:13px 15px;text-align:center;}
+.confirm-box.on{display:block;animation:fd .25s ease;}
+.confirm-box b{display:block;font-size:.94rem;color:#4ade80;margin-bottom:3px;}
+.confirm-box span{font-size:.73rem;color:var(--sub);}
+
+.post-btns{display:none;flex-direction:column;gap:8px;}
+.post-btns.on{display:flex;animation:fd .3s ease;}
+.btn-save{width:100%;padding:14px;border:none;border-radius:11px;
+  background:var(--accent);color:#fff;
+  font-family:'DM Sans',sans-serif;font-size:.92rem;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 4px 16px rgba(249,115,22,.22);transition:all .15s;}
+.btn-save:hover{background:var(--accent2);}
+.btn-disc{width:100%;padding:11px;border:1px solid var(--border);border-radius:11px;
+  background:transparent;color:var(--sub);
+  font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .15s;}
+.btn-disc:hover{border-color:var(--label);color:var(--label);}
 
 /* HISTORIAL */
-.db-wrap{padding:12px;}
-.kpi-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
-.kpi-chip{background:var(--s2);border:1px solid var(--border2);border-radius:9px;padding:9px 10px;text-align:center;}
-.kpi-chip .kv{font-family:'Barlow Condensed',sans-serif;font-size:1.25rem;font-weight:800;line-height:1;}
-.kpi-chip .kl{font-size:.6rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:3px;}
-.kpi-chip.mttr .kv{color:var(--red);}
-.kpi-chip.mtbf .kv{color:var(--green);}
-.kpi-chip.disp .kv{color:var(--accent);}
-.kpi-chip.total .kv{color:var(--amber);}
-.db-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px;}
-.db-total{margin-left:auto;background:var(--s2);border:1px solid var(--border);
-  border-radius:20px;padding:4px 12px;font-family:'Barlow Condensed',sans-serif;font-size:.76rem;color:var(--label);}
-.tbl-wrap{overflow-x:auto;border-radius:9px;border:1px solid var(--border);}
-table{border-collapse:collapse;width:100%;min-width:760px;background:var(--s1);}
-thead tr{background:var(--s2);}
-th{padding:8px 9px;text-align:left;font-family:'Barlow Condensed',sans-serif;
-  font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--muted);white-space:nowrap;border-bottom:1px solid var(--border);}
-tbody tr{border-bottom:1px solid var(--border);transition:background .1s;}
-tbody tr:hover{background:var(--s2);}
-td{padding:7px 9px;font-size:.74rem;color:var(--text);vertical-align:top;}
-td.idc{font-family:'Barlow Condensed',sans-serif;font-size:.9rem;font-weight:700;color:var(--accent);}
-.pill{display:inline-block;padding:2px 7px;border-radius:20px;font-size:.64rem;font-weight:700;}
-.pA{background:#1a1228;color:#e879f9;}.pB{background:#0e1a22;color:#38bdf8;}
-.pC{background:#0e1a14;color:#4ade80;}.pD{background:#1e1a0e;color:#fbbf24;}
-.pMTD{background:#1a120e;color:#fb923c;}.pMPC{background:#111820;color:#94a3b8;}
-.del-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.9rem;padding:2px 4px;border-radius:3px;}
-.del-btn:hover{color:var(--red);}
-.empty{text-align:center;padding:40px 16px;color:var(--muted);}
-.empty .ei{font-size:2.4rem;margin-bottom:7px;}
-.empty p{font-size:.8rem;}
+.hist-wrap{padding:13px;max-width:560px;margin:0 auto;}
+.hkpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:12px;}
+.hkpi{background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:9px 10px;text-align:center;}
+.hkpi .v{font-family:'DM Mono',monospace;font-size:1.15rem;font-weight:500;}
+.hkpi .l{font-size:.58rem;color:var(--sub);text-transform:uppercase;letter-spacing:.07em;margin-top:2px;}
+.hkpi.mttr .v{color:var(--red);}
+.hkpi.mtbf .v{color:var(--green);}
+.hkpi.down .v{color:var(--amber);}
+.hkpi.tot  .v{color:var(--accent);}
 
-.lb{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.93);align-items:center;justify-content:center;}
-.lb.on{display:flex;}
-.lb img{max-width:93vw;max-height:89vh;border-radius:9px;}
-.lb-x{position:absolute;top:14px;right:18px;font-size:2rem;color:#fff;cursor:pointer;background:none;border:none;}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);
-  background:#16181f;border:1px solid var(--border2);color:var(--text);
-  padding:10px 20px;border-radius:28px;font-size:.8rem;font-weight:500;
-  box-shadow:0 4px 22px rgba(0,0,0,.6);transition:transform .28s cubic-bezier(.175,.885,.32,1.275);
-  z-index:9999;white-space:normal;max-width:88vw;text-align:center;line-height:1.4;}
+.hbar{display:flex;gap:8px;align-items:center;margin-bottom:10px;}
+.bxl{background:var(--card);color:var(--text);border:1px solid var(--border);
+  border-radius:7px;padding:7px 13px;font-size:.76rem;font-weight:600;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:all .15s;}
+.bxl:hover{border-color:var(--accent);color:var(--accent);}
+.bdel{background:rgba(239,68,68,.07);color:var(--red);border:1px solid rgba(239,68,68,.18);
+  border-radius:7px;padding:7px 13px;font-size:.76rem;font-weight:600;cursor:pointer;
+  font-family:'DM Sans',sans-serif;}
+.nreg{margin-left:auto;font-size:.7rem;color:var(--sub);font-family:'DM Mono',monospace;}
+
+.tbl-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border);}
+table{border-collapse:collapse;width:100%;min-width:640px;background:var(--card);}
+th{padding:8px 9px;font-size:.61rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--sub);border-bottom:1px solid var(--border);white-space:nowrap;}
+td{padding:7px 9px;font-size:.74rem;vertical-align:top;border-bottom:1px solid var(--border);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.02);}
+td.folio{font-family:'DM Mono',monospace;font-size:.86rem;font-weight:500;color:var(--accent);}
+.xbtn{background:none;border:none;color:var(--sub);cursor:pointer;padding:2px 5px;border-radius:3px;}
+.xbtn:hover{color:var(--red);}
+.empty{text-align:center;padding:38px 16px;color:var(--sub);}
+.empty .ei{font-size:2rem;margin-bottom:7px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(70px);
+  background:#14141f;border:1px solid var(--border2);color:var(--text);
+  padding:10px 20px;border-radius:24px;font-size:.8rem;font-weight:500;
+  box-shadow:0 4px 20px rgba(0,0,0,.7);
+  transition:transform .28s cubic-bezier(.175,.885,.32,1.275);
+  z-index:9999;white-space:normal;max-width:86vw;text-align:center;line-height:1.4;}
 .toast.on{transform:translateX(-50%) translateY(0);}
-@media(max-width:480px){.g2,.g3{grid-template-columns:1fr;}.kpi-bar{grid-template-columns:1fr 1fr;}}
+
+@media(max-width:420px){
+  .g2,.g3{grid-template-columns:1fr;}
+  .kpi-row{grid-template-columns:1fr 1fr;}
+  .hkpi-row{grid-template-columns:1fr 1fr;}
+  .firma-row{grid-template-columns:1fr;}
+}
 </style>
 </head>
 <body>
 
 <div class="nav">
-  <button class="nav-btn active" onclick="goTab(this,'form')">🔧 Nuevo Correctivo</button>
-  <button class="nav-btn" onclick="goTab(this,'db')">📊 Historial · KPIs</button>
+  <button class="nb act" onclick="goTab(this,'form')">⚡ Nueva Falla</button>
+  <button class="nb" onclick="goTab(this,'hist')">📊 Historial · KPIs</button>
 </div>
 
-<div class="panel active" id="panel-form">
+<!-- ══════════════════════════ FORMULARIO ══════════════════════════ -->
+<div class="panel act" id="panel-form">
+
   <div class="hdr">
-    <div class="hdr-icon">🔧</div>
+    <div class="hdr-ic">⚡</div>
     <div>
-      <h1>Mantenimiento Correctivo</h1>
-      <p>Envases Universales · MTTR · MTBF · Disponibilidad</p>
+      <h1>Reporte de Falla</h1>
+      <p>Envases Universales · Mantenimiento</p>
     </div>
-    <div class="hdr-badge">
-      <div class="n" id="nextId">—</div>
-      <div class="l">MC#</div>
-    </div>
+    <div class="folio-badge" id="foliobadge">RF-0001</div>
   </div>
 
-  <!-- barra de progreso -->
-  <div style="background:var(--s1);border-bottom:1px solid var(--border);padding:7px 14px;">
-    <div style="max-width:680px;margin:0 auto;display:flex;gap:5px;">
-      <div class="prog-step active" id="ps1"></div>
-      <div class="prog-step" id="ps2"></div>
-      <div class="prog-step" id="ps3"></div>
-      <div class="prog-step" id="ps4"></div>
-    </div>
-  </div>
+  <div class="wrap">
 
-  <div class="fw">
+    <!-- ═══ 1. INFORMACIÓN GENERAL ═══ -->
+    <div class="sec" id="s1">
+      <div class="sec-hd">
+        <span class="ico">📋</span>
+        <div><div class="tit">1. Información general</div><div class="sub">¿Dónde y en qué?</div></div>
+        <span class="done-mark">✓</span>
+      </div>
+      <div class="sec-body">
 
-    <!-- ① QUIÉN / CUÁNDO (30 seg) -->
-    <div class="sec" id="sec1">
-      <div class="sec-hd"><span class="sec-n">1</span> ¿Quién y cuándo?</div>
-      <div class="g2">
         <div>
-          <label>Cuadrilla</label>
-          <select id="cuadrilla" onchange="onCuadrilla();updateProg();">
-            <option value="">— Selecciona —</option>
-            <option value="A">Cuadrilla A</option>
-            <option value="B">Cuadrilla B</option>
-            <option value="C">Cuadrilla C</option>
-            <option value="D">Cuadrilla D</option>
-            <option value="MTD">MTD</option>
-            <option value="MPC">MP/C</option>
-          </select>
+          <span class="lbl">¿Qué línea falló?</span>
+          <div class="chips" id="chips-linea">
+            <div class="chip" onclick="selLinea(this,'L1','Línea 1')">Línea 1</div>
+            <div class="chip" onclick="selLinea(this,'L2','Línea 2')">Línea 2</div>
+            <div class="chip" onclick="selLinea(this,'L3','Línea 3')">Línea 3</div>
+            <div class="chip" onclick="selLinea(this,'L4','Línea 4')">Línea 4</div>
+            <div class="chip" onclick="selLinea(this,'L7','Línea 7')">Línea 7</div>
+            <div class="chip" onclick="selLinea(this,'L8','Línea 8')">Línea 8</div>
+            <div class="chip" onclick="selLinea(this,'PAL','Paletizador')">Paletizador</div>
+            <div class="chip" onclick="selLinea(this,'SRV','Servicios')">Servicios</div>
+          </div>
         </div>
-        <div>
-          <label>Fecha</label>
-          <input type="date" id="fecha" onchange="updateProg()">
+
+        <!-- Máquinas de la línea seleccionada -->
+        <div id="maq-wrap" style="display:none;">
+          <span class="lbl">¿Qué máquina falló?</span>
+          <div class="chips sub-chips on" id="chips-maq"></div>
         </div>
-      </div>
-      <div class="g2">
-        <div>
-          <label>Turno</label>
-          <select id="turno">
-            <option value="">— Selecciona —</option>
-            <option>T1 (07:00–19:00)</option>
-            <option>T2 (19:00–07:00)</option>
-          </select>
+
+        <!-- Nombre del equipo queda aquí, junto a la selección -->
+        <div id="equipo-wrap" style="display:none;">
+          <span class="lbl">Nombre del equipo <span style="color:var(--sub);font-weight:400;text-transform:none;letter-spacing:0;">(confirma o edita)</span></span>
+          <input type="text" id="nombreEquipo" placeholder="Se llena al seleccionar máquina" oninput="chkSec1()">
         </div>
-        <div>
-          <label>Tipo de falla</label>
-          <select id="tipoFalla">
-            <option value="">— Selecciona —</option>
-            <option>Mecánica</option>
-            <option>Eléctrica</option>
-            <option>Neumática</option>
-            <option>Hidráulica</option>
-            <option>Electrónica/Control</option>
-            <option>Instrumentación</option>
-            <option>Lubricación</option>
-            <option>Estructural</option>
-          </select>
-        </div>
-      </div>
-      <!-- Técnico líder -->
-      <div class="tec-card" id="tecCard">
-        <div style="font-size:.66rem;color:var(--label);font-weight:600;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;">Técnico líder de intervención</div>
-        <div id="tecList"></div>
+
       </div>
     </div>
 
-    <!-- ② EQUIPO (30 seg) -->
-    <div class="sec" id="sec2">
-      <div class="sec-hd"><span class="sec-n">2</span> ¿Qué equipo falló?</div>
-      <div class="g2">
+    <!-- ═══ 2. DESCRIPCIÓN DE LA FALLA ═══ -->
+    <div class="sec" id="s2">
+      <div class="sec-hd">
+        <span class="ico">🔍</span>
+        <div><div class="tit">2. ¿Qué pasó?</div><div class="sub">Síntoma y prioridad</div></div>
+        <span class="done-mark">✓</span>
+      </div>
+      <div class="sec-body">
+
         <div>
-          <label>Línea</label>
-          <select id="linea" onchange="actualizarMaquinas();calcMtbfAuto();updateProg();">
-            <option value="">— Selecciona —</option>
-            <option value="L1">Línea 1</option><option value="L2">Línea 2</option>
-            <option value="L3">Línea 3</option><option value="L4">Línea 4</option>
-            <option value="L7">Línea 7</option><option value="L8">Línea 8</option>
-            <option value="PAL1">Paletizador L1</option><option value="PAL3">Paletizador L3</option>
-            <option value="PAL4">Paletizador L4</option><option value="PAL72">Paletizador L7y2</option>
-            <option value="PAL8">Paletizador L8</option><option value="SRV">Servicios Gles.</option>
+          <span class="q">¿Qué hacía (o dejó de hacer) el equipo?</span>
+          <textarea id="sintoma" rows="2" placeholder="Ej: La troqueladora dejó de avanzar, se escuchó ruido metálico y se detuvo con alarma E-04..." oninput="chkSec2()"></textarea>
+        </div>
+
+        <div>
+          <span class="lbl">Prioridad</span>
+          <div class="chips prior-chips">
+            <div class="chip" data-p="URGENTE" onclick="selPrior(this,'URGENTE','sel-red')">🔴 Urgente — línea parada</div>
+            <div class="chip" data-p="ALTA"    onclick="selPrior(this,'ALTA','sel-amber')">🟠 Alta — riesgo de paro</div>
+            <div class="chip" data-p="MEDIA"   onclick="selPrior(this,'MEDIA','sel-blue')">🟡 Media — funciona parcial</div>
+            <div class="chip" data-p="BAJA"    onclick="selPrior(this,'BAJA','sel-green')">🟢 Baja — sin impacto</div>
+          </div>
+        </div>
+
+        <div>
+          <span class="lbl">¿Quién detectó el problema?</span>
+          <select id="reportante">
+            <option value="">— Operador / supervisor que reportó —</option>
+            <optgroup label="Supervisores">
+              <option>SANCHEZ ZAMBRANO RAUL — Supervisor Turno</option>
+              <option>VICTOR SEPULVEDA — Supervisor Mantenimiento</option>
+            </optgroup>
+            <optgroup label="Técnicos">
+              <option>ROSALES CAMACHO EDUARDO</option>
+              <option>COELLO HERNANDEZ CARLOS EDUARDO</option>
+              <option>JIMENEZ CORDOVA JONATHAN</option>
+              <option>VELAZCO DOMINGUEZ ANGEL ALBERTO</option>
+              <option>GUERRERO RUIZ DANIEL</option>
+              <option>MARQUEZ CAZARIN JOSE ANGEL</option>
+              <option>OBESO SOTO GILDARDO ERNESTO</option>
+              <option>ALCOCER DIAZ MARIO</option>
+              <option>PEREZ VAZQUEZ LORENZO</option>
+              <option>GARCIA GARCIA MIGUEL</option>
+              <option>ABELAR LOPEZ DANIEL DOMINGO</option>
+              <option>CAMARGO CRUZ ALDO SAUL</option>
+              <option>RAMIREZ LEYVA JULIO CESAR</option>
+              <option>HERRERA FLORES JESUS DAVID</option>
+              <option>LAZCANO VELAZQUEZ EDSON MISAEL</option>
+              <option>CASTAÑEDA PATRON EDDWAR ALEXIS</option>
+            </optgroup>
           </select>
         </div>
+
+      </div>
+    </div>
+
+    <!-- ═══ 3. TIEMPOS (BASE MTTR/MTBF) ═══ -->
+    <div class="sec" id="s3">
+      <div class="sec-hd">
+        <span class="ico">⏱️</span>
+        <div><div class="tit">3. Tiempos</div><div class="sub">MTTR y downtime se calculan solos</div></div>
+        <span class="done-mark">✓</span>
+      </div>
+      <div class="sec-body">
+
+        <div class="g2">
+          <div>
+            <span class="lbl">📅 Fecha de la falla</span>
+            <input type="date" id="fechaFalla" style="width:100%;background:var(--inp);border:1.5px solid var(--inp-b);border-radius:9px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.87rem;padding:9px 11px;outline:none;appearance:none;" onchange="calcTiempos()">
+          </div>
+          <div>
+            <span class="lbl">⚡ Hora que falló</span>
+            <input type="time" id="hFalla" onchange="calcTiempos()">
+          </div>
+        </div>
+
+        <div class="g2">
+          <div>
+            <span class="lbl">🔧 Inicio intervención</span>
+            <input type="time" id="hInicioInt" onchange="calcTiempos()">
+          </div>
+          <div>
+            <span class="lbl">✅ Fin / vuelta marcha</span>
+            <input type="time" id="hFinInt" onchange="calcTiempos()">
+          </div>
+
+        </div>
+
+        <!-- KPIs calculados automáticamente -->
+        <div class="kpi-row" id="kpiRow">
+          <div class="kpi-card down">
+            <div class="kpi-v" id="kDowntime">—</div>
+            <div class="kpi-u">minutos</div>
+            <div class="kpi-l">Downtime</div>
+          </div>
+          <div class="kpi-card mttr">
+            <div class="kpi-v" id="kMttr">—</div>
+            <div class="kpi-u">minutos</div>
+            <div class="kpi-l">MTTR</div>
+          </div>
+
+        </div>
+
+        <!-- MTBF desde historial -->
+        <div class="mtbf-info" id="mtbfInfo">
+          <div class="v" id="kMtbf">— selecciona equipo</div>
+          <div class="l" id="kMtbfSrc">MTBF · tiempo desde la última falla registrada de este equipo</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═══ 4. DIAGNÓSTICO Y ACCIÓN ═══ -->
+    <div class="sec" id="s4">
+      <div class="sec-hd">
+        <span class="ico">🛠️</span>
+        <div><div class="tit">4. Diagnóstico y acción</div><div class="sub">Qué causó y qué se hizo</div></div>
+        <span class="done-mark">✓</span>
+      </div>
+      <div class="sec-body">
+
         <div>
-          <label>Máquina / Equipo</label>
-          <select id="maquina" onchange="calcMtbfAuto();updateProg();">
-            <option value="">— Selecciona línea primero —</option>
+          <span class="lbl">Tipo de falla</span>
+          <div class="chips">
+            <div class="chip" onclick="selChip(this,'tipoFalla','⚙️ Mecánica')">⚙️ Mecánica</div>
+            <div class="chip" onclick="selChip(this,'tipoFalla','⚡ Eléctrica')">⚡ Eléctrica</div>
+            <div class="chip" onclick="selChip(this,'tipoFalla','💨 Neumática')">💨 Neumática</div>
+            <div class="chip" onclick="selChip(this,'tipoFalla','🖥️ Electrónica')">🖥️ Electrónica</div>
+            <div class="chip" onclick="selChip(this,'tipoFalla','💧 Hidráulica')">💧 Hidráulica</div>
+            <div class="chip" onclick="selChip(this,'tipoFalla','🔩 Desgaste')">🔩 Desgaste</div>
+          </div>
+        </div>
+
+        <div>
+          <span class="q">¿Por qué falló? — Causa raíz</span>
+          <span class="hint">Breve y directo: desgaste, falta de lubricación, error de operación, fin de vida útil...</span>
+          <textarea id="causaRaiz" rows="2" placeholder="Ej: Rodamiento agotó vida útil por ausencia de lubricación programada en MP..." oninput="chkSec4()"></textarea>
+        </div>
+
+        <div>
+          <span class="q">¿Qué se hizo para que funcionara?</span>
+          <span class="hint">Detalle técnico de la reparación.</span>
+          <textarea id="trabajoRealizado" rows="3" placeholder="Ej: Se sustituyó rodamiento axial SKF 6205, se verificó alineación, se lubricó con grasa Mobil Polyrex EM..." oninput="chkSec4()"></textarea>
+        </div>
+
+        <div>
+          <span class="q">Refacciones y consumibles utilizados</span>
+          <span class="hint">Lista con número de parte si aplica. Puede quedar en blanco si no se usaron piezas.</span>
+          <textarea id="refacciones" rows="2" placeholder="Ej: Rodamiento SKF 6205 (No. parte: 6205-2RS), Grasa Mobil Polyrex EM 500g..."></textarea>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═══ 5. ESTADO FINAL ═══ -->
+    <div class="sec" id="s5">
+      <div class="sec-hd">
+        <span class="ico">🏁</span>
+        <div><div class="tit">5. Cierre</div><div class="sub">Estado final y firma</div></div>
+        <span class="done-mark">✓</span>
+      </div>
+      <div class="sec-body">
+
+        <div>
+          <span class="lbl">Estado final del equipo</span>
+          <div class="chips estado-chips">
+            <div class="chip" onclick="selChip(this,'estadoFinal','✅ Operativo — reparación completa','sel-green')">✅ Operativo</div>
+            <div class="chip" onclick="selChip(this,'estadoFinal','👁️ En observación — monitorear','sel-amber')">👁️ En observación</div>
+            <div class="chip" onclick="selChip(this,'estadoFinal','⚠️ Reparación temporal — pendiente definitiva','sel-amber')">⚠️ Temporal</div>
+            <div class="chip" onclick="selChip(this,'estadoFinal','🔴 Requiere paro programado','sel-red')">🔴 Requiere paro</div>
+          </div>
+        </div>
+
+        <div>
+          <span class="lbl">Técnico responsable de la reparación</span>
+          <select id="tecnico" onchange="chkSec5()">
+            <option value="">— Selecciona técnico —</option>
+            <optgroup label="Cuadrilla A">
+              <option>ROSALES CAMACHO EDUARDO</option>
+              <option>COELLO HERNANDEZ CARLOS EDUARDO</option>
+            </optgroup>
+            <optgroup label="Cuadrilla B">
+              <option>JIMENEZ CORDOVA JONATHAN</option>
+            </optgroup>
+            <optgroup label="Cuadrilla C">
+              <option>VELAZCO DOMINGUEZ ANGEL ALBERTO</option>
+              <option>GUERRERO RUIZ DANIEL</option>
+              <option>SANCHEZ ZAMBRANO RAUL</option>
+              <option>MARQUEZ CAZARIN JOSE ANGEL</option>
+            </optgroup>
+            <optgroup label="Cuadrilla D">
+              <option>OBESO SOTO GILDARDO ERNESTO</option>
+              <option>ALCOCER DIAZ MARIO</option>
+              <option>PEREZ VAZQUEZ LORENZO</option>
+              <option>GARCIA GARCIA MIGUEL</option>
+            </optgroup>
+            <optgroup label="MTD">
+              <option>ABELAR LOPEZ DANIEL DOMINGO</option>
+              <option>CAMARGO CRUZ ALDO SAUL</option>
+              <option>RAMIREZ LEYVA JULIO CESAR</option>
+              <option>HERRERA FLORES JESUS DAVID</option>
+              <option>LAZCANO VELAZQUEZ EDSON MISAEL</option>
+              <option>CASTAÑEDA PATRON EDDWAR ALEXIS</option>
+            </optgroup>
+            <optgroup label="MP/C">
+              <option>VICTOR SEPULVEDA</option>
+            </optgroup>
           </select>
         </div>
-      </div>
-      <label>Componente afectado <span style="color:var(--muted);font-weight:400;">(opcional)</span></label>
-      <input type="text" id="componente" placeholder="Ej: variador, cadena de arrastre, sello mecánico...">
-      <label>Modo de falla</label>
-      <select id="modoFalla" onchange="onModoFalla()">
-        <option value="">— Selecciona —</option>
-        <option value="RUIDO">Ruido / vibración anormal</option>
-        <option value="CALOR">Sobrecalentamiento</option>
-        <option value="FUGA">Fuga (aceite / grasa / aire / agua)</option>
-        <option value="DESGASTE">Desgaste excesivo / rotura</option>
-        <option value="ELECTRICO">Falla eléctrica / cortocircuito</option>
-        <option value="ALARMA">Alarma / paro automático</option>
-        <option value="ALINEACION">Desalineación / desajuste</option>
-        <option value="CORROSION">Corrosión / oxidación</option>
-        <option value="SENSOR">Error de sensor / encoder</option>
-        <option value="FATIGA">Fatiga de material</option>
-      </select>
 
-      <!-- Causa raíz automática -->
-      <div class="cr-box" id="crBox">
-        <div class="cr-tag">🤖 Causa raíz sugerida automáticamente</div>
-        <div class="cr-val" id="crVal">—</div>
-        <div class="cr-det" id="crDet">—</div>
+        <div>
+          <span class="q">Observaciones y recomendaciones</span>
+          <span class="hint">¿Qué se puede hacer para evitar que vuelva a pasar?</span>
+          <textarea id="observaciones" rows="2" placeholder="Ej: Ajustar frecuencia de MP a cada 500h, revisar nivel de aceite semanalmente..."></textarea>
+        </div>
+
       </div>
     </div>
 
-    <!-- ③ TIEMPOS (40 seg) -->
-    <div class="sec" id="sec3">
-      <div class="sec-hd"><span class="sec-n">3</span> Tiempos de intervención</div>
-      <div class="g3">
-        <div>
-          <label>⚡ Detección</label>
-          <input type="time" id="hDeteccion" onchange="calcMetrics();updateProg();">
-        </div>
-        <div>
-          <label>🔧 Inicio</label>
-          <input type="time" id="hInicioInt" onchange="calcMetrics()">
-        </div>
-        <div>
-          <label>✅ Fin / marcha</label>
-          <input type="time" id="hFinInt" onchange="calcMetrics()">
-        </div>
+    <button class="btn-gen" onclick="generar()">📄 Generar reporte</button>
+
+    <!-- ══ RESULTADO ══ -->
+    <div class="result" id="result">
+      <div class="msg-box">
+        <div class="msg-hd">✅ reporte completo · listo para copiar y enviar</div>
+        <pre class="msg-pre" id="msgPre"></pre>
       </div>
-
-      <!-- KPIs calculados automáticamente -->
-      <div class="met-grid">
-        <div class="met-card mttr">
-          <div class="met-v" id="mttrVal">—</div>
-          <div class="met-u">minutos</div>
-          <div class="met-l">MTTR</div>
-        </div>
-        <div class="met-card mtbf">
-          <div class="met-v" id="mtbfVal">—</div>
-          <div class="met-u">horas</div>
-          <div class="met-l">MTBF</div>
-          <div class="met-auto" id="mtbfSrc">desde historial</div>
-        </div>
-        <div class="met-card ttm">
-          <div class="met-v" id="ttmVal">—</div>
-          <div class="met-u">minutos</div>
-          <div class="met-l">TTM total</div>
-        </div>
-        <div class="met-card disp">
-          <div class="met-v" id="dispVal">—</div>
-          <div class="met-u">%</div>
-          <div class="met-l">Disponibilidad</div>
-        </div>
+      <button class="btn-copy" id="btnCopy" onclick="copiar()">📋 Copiar al portapapeles</button>
+      <div class="confirm-box" id="confirmBox">
+        <b>✅ ¡Copiado! Pégalo en WhatsApp.</b>
+        <span>Cuando lo hayas enviado, registra para guardar en Excel y Drive.</span>
       </div>
-    </div>
-
-    <!-- ④ DESCRIPCIÓN Y ACCIONES (60 seg) -->
-    <div class="sec" id="sec4">
-      <div class="sec-hd"><span class="sec-n">4</span> Descripción y acciones</div>
-
-      <p class="q-label">¿Qué ocurrió exactamente? ¿Cómo se detectó la falla?</p>
-      <p class="q-hint">Incluye síntomas observados, condición del equipo y si afectó producción.</p>
-      <textarea id="descripcion" rows="3"></textarea>
-
-      <p class="q-label" style="margin-top:14px;">¿Qué se hizo para corregirlo?</p>
-      <p class="q-hint">Una acción por línea es suficiente. Puedes agregar más si aplica.</p>
-      <div class="acc-list" id="accList"></div>
-      <button class="btn btn-add" onclick="addAcc()">➕ Agregar acción</button>
-
-      <p class="q-label" style="margin-top:14px;">Estado de cierre</p>
-      <select id="estadoCierre">
-        <option value="CERRADO">✅ Cerrado — equipo operativo</option>
-        <option value="TEMPORAL">⚠️ Reparación temporal — pendiente definitiva</option>
-        <option value="PENDIENTE">🔴 Pendiente — requiere paro programado</option>
-      </select>
-
-      <p class="q-label" style="margin-top:14px;">¿Requiere seguimiento?</p>
-      <select id="seguimiento">
-        <option value="NO">No — queda resuelto</option>
-        <option value="MP">Sí — programar preventivo</option>
-        <option value="INSP">Sí — inspección de seguimiento</option>
-        <option value="PROV">Sí — cotizar / pedir refacción</option>
-      </select>
-    </div>
-
-    <button class="btn btn-primary" onclick="generarReporte()">
-      📄 Generar reporte
-    </button>
-
-    <!-- PANEL DE RESULTADO -->
-    <div class="rpt-wrap" id="rptWrap">
-      <div class="rpt-box">
-        <div class="rpt-box-hd">🔧 REPORTE DE MANTENIMIENTO CORRECTIVO · LISTO PARA COPIAR</div>
-        <pre id="rptMsg" class="rpt-pre"></pre>
-      </div>
-
-      <!-- PASO 1: Copiar -->
-      <button class="btn-copiar" id="btnCopiar" onclick="copiarReporte()">
-        📋 Copiar al portapapeles
-      </button>
-
-      <!-- PASO 2: Confirmación -->
-      <div class="confirm-panel" id="confirmPanel">
-        <div class="confirm-badge">✅ ¡Texto copiado en el portapapeles!</div>
-        <p class="confirm-hint">Pégalo donde lo necesites (WhatsApp, correo, etc.).<br>Luego registra y limpia o descarta.</p>
-      </div>
-
-      <!-- PASO 3: Acciones post-copia -->
       <div class="post-btns" id="postBtns">
-        <button class="btn-registrar" onclick="registrarYLimpiar()">
-          ✅ Registrar en historial y limpiar
-        </button>
-        <button class="btn-nuevo" onclick="soloLimpiar()">
-          🗑 Descartar y empezar nuevo
-        </button>
+        <button class="btn-save" onclick="guardar()">💾 Registrar · Excel · Drive</button>
+        <button class="btn-disc" onclick="descartar()">🗑 Descartar y nueva falla</button>
       </div>
     </div>
 
   </div>
 </div>
 
-<!-- HISTORIAL -->
-<div class="panel" id="panel-db">
-  <div class="db-wrap">
-    <div class="kpi-bar" id="kpiBar"></div>
-    <div class="db-bar">
-      <button class="btn btn-export" onclick="exportExcel()">📥 Excel</button>
-      <button class="btn btn-danger" onclick="limpiarDB()">🗑 Borrar todo</button>
-      <div class="db-total" id="dbTotal">0 registros</div>
+<!-- ══════════════════════════ HISTORIAL ══════════════════════════ -->
+<div class="panel" id="panel-hist">
+  <div class="hist-wrap">
+    <div class="hkpi-row" id="hkpiRow"></div>
+    <div class="hbar">
+      <button class="bxl" onclick="exportExcel()">📥 Excel</button>
+      <button class="bdel" onclick="borrarTodo()">🗑 Borrar todo</button>
+      <span class="nreg" id="nReg">0 registros</span>
     </div>
     <div class="tbl-wrap">
       <table>
         <thead><tr>
-          <th>MC#</th><th>Fecha</th><th>Cuad.</th><th>Líder</th>
-          <th>Línea</th><th>Equipo</th><th>Tipo</th>
-          <th>MTTR(min)</th><th>MTBF(h)</th><th>Disp%</th><th>Estado</th><th></th>
+          <th>Folio</th><th>Fecha</th><th>Línea</th><th>Equipo</th>
+          <th>Prioridad</th><th>Downtime</th><th>MTTR</th><th>MTBF</th><th>Estado</th><th></th>
         </tr></thead>
-        <tbody id="dbBody"></tbody>
+        <tbody id="tblBody"></tbody>
       </table>
     </div>
-    <div class="empty" id="emptyMsg">
-      <div class="ei">🔧</div>
-      <p>Sin registros aún.<br>Ve a <b>Nuevo Correctivo</b> para comenzar.</p>
-    </div>
+    <div class="empty" id="emptyMsg"><div class="ei">📭</div><p>Sin registros aún.</p></div>
   </div>
 </div>
 
-<div class="lb" id="lb" onclick="closeLB()">
-  <button class="lb-x">✕</button><img id="lbImg" src="" alt="">
-</div>
 <div class="toast" id="toast"></div>
 
 <script>
-// ═══════════════════════════════════════
-// CONFIGURACIÓN — pon tu URL de Apps Script aquí
-// ═══════════════════════════════════════
-const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbx5uLESzT4QGmqR7iVVJNREYFhK9dqJbkbXm2RqdQmzmUEo3M4Ou5WpTBWDv9au9rsI/exec'; // <-- misma URL o una nueva para correctivos
-// Para guardar en Drive agrega en tu Apps Script: DriveApp.getFolderById('TU_FOLDER_ID').createFile(...)
-const DB_KEY = 'eu_correctivo_v2';
-
-// ─── CATÁLOGOS ───
-const CUADRILLAS = {
-  A:[
-    {id:'6414', n:'ROSALES CAMACHO EDUARDO',         p:'Técnico Línea',    l:'L1 y L4'},
-    {id:'',     n:'COELLO HERNANDEZ CARLOS EDUARDO', p:'Técnico Línea',    l:'L2, L7, L8'},
-  ],
-  B:[
-    {id:'13643',n:'JIMENEZ CORDOVA JONATHAN',        p:'Técnico Línea',    l:'L1 y L4'},
-    {id:'',     n:'(Técnico automáticas)',            p:'Técnico Línea',    l:'Automáticas'},
-  ],
-  C:[
-    {id:'8793', n:'VELAZCO DOMINGUEZ ANGEL ALBERTO', p:'Técnico Facilities',l:'L3'},
-    {id:'1653', n:'GUERRERO RUIZ DANIEL',            p:'Técnico Línea',    l:'L1 y L4'},
-    {id:'8575', n:'SANCHEZ ZAMBRANO RAUL',           p:'Supervisor Turno', l:'L2, L7, L8'},
-    {id:'23121',n:'MARQUEZ CAZARIN JOSE ANGEL',      p:'Técnico Línea',    l:'Cizallas'},
-  ],
-  D:[
-    {id:'13074',n:'OBESO SOTO GILDARDO ERNESTO',     p:'Técnico Línea',    l:'L1 y L4'},
-    {id:'27795',n:'ALCOCER DIAZ MARIO',              p:'Técnico Línea',    l:'L2, L7, L8'},
-    {id:'19948',n:'PEREZ VAZQUEZ LORENZO',           p:'Técnico Línea',    l:'L2, L7, L8'},
-    {id:'10869',n:'GARCIA GARCIA MIGUEL',            p:'Técnico Línea',    l:'L2, L7, L8'},
-  ],
-  MTD:[
-    {id:'5514', n:'ABELAR LOPEZ DANIEL DOMINGO',     p:'Técnico Línea',    l:'L3'},
-    {id:'7801', n:'CAMARGO CRUZ ALDO SAUL',          p:'Técnico Línea',    l:'L1 y L4'},
-    {id:'5509', n:'RAMIREZ LEYVA JULIO CESAR',       p:'Técnico Línea',    l:'L3'},
-    {id:'8675', n:'HERRERA FLORES JESUS DAVID',      p:'Técnico Línea',    l:'L3'},
-    {id:'28602',n:'LAZCANO VELAZQUEZ EDSON MISAEL',  p:'Técnico Línea',    l:'—'},
-    {id:'23365',n:'CASTAÑEDA PATRON EDDWAR ALEXIS',  p:'Técnico Temporal', l:'L2, L7, L8'},
-  ],
-  MPC:[
-    {id:'',     n:'VICTOR SEPULVEDA',                p:'Supervisor Matto', l:'MP'},
-  ],
-};
+// ═══════════════════════════════════
+// URL de tu Apps Script (ver instrucciones al final)
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzHpuHnKzd0llRSqrPZ_gNmeT66bkDBY2OWhhWDGLxYON8QIb6zgcIyUoRITee9oLdL/exec';
+const DB_KEY = 'eu_rf_v1';
+// ═══════════════════════════════════
 
 const MQ = {
-  L1:['Troqueladora 1','Troqueladora 2','Troqueladora 3','Transportador L1','Estación de apilado'],
-  L3:['Troqueladora 1','Troqueladora 2','Troqueladora 3','Transportador L3','Estación de apilado'],
-  L4:['Troqueladora 1','Troqueladora 2','Troqueladora 3','Transportador L4','Estación de apilado'],
-  L2:['Cizalla','Soldadora','Barnizadora','Horno','Transportador','Acuelladora','Cerradora','Hermeticidad','Cámara de Visión','Codificadora'],
-  L7:['Cizalla','Soldadora','Barnizadora','Horno','Transportador','Acuelladora','Cerradora','Hermeticidad','Cámara de Visión','Codificadora'],
-  L8:['Cizalla','Soldadora','Barnizadora','Horno','Transportador','Acuelladora','Cerradora','Hermeticidad','Cámara de Visión','Codificadora'],
-  PAL1:['Paletizador','Robot paletizador','Flejadora','Transportador salida'],
-  PAL3:['Paletizador','Robot paletizador','Flejadora','Transportador salida'],
-  PAL4:['Paletizador','Robot paletizador','Flejadora','Transportador salida'],
-  PAL72:['Paletizador','Robot paletizador','Flejadora','Transportador salida'],
-  PAL8:['Paletizador','Robot paletizador','Flejadora','Transportador salida'],
-  SRV:['Compresor','Planta de tratamiento','Sistema HVAC','Subestación','Calderas','Red neumática'],
-};
-const LL={L1:'Línea 1',L2:'Línea 2',L3:'Línea 3',L4:'Línea 4',L7:'Línea 7',L8:'Línea 8',
-  PAL1:'Paletizador L1',PAL3:'Paletizador L3',PAL4:'Paletizador L4',PAL72:'Paletizador L7y2',PAL8:'Paletizador L8',SRV:'Servicios Gles.'};
-const CP={A:'pA',B:'pB',C:'pC',D:'pD',MTD:'pMTD',MPC:'pMPC'};
-
-// ─── CAUSA RAÍZ AUTOMÁTICA POR MODO DE FALLA ───
-const CR_MAP = {
-  RUIDO:{
-    causa:'Desgaste mecánico / desbalanceo / holgura',
-    det:'El ruido o vibración anormal generalmente indica: rodamientos o bujes desgastados, desbalanceo en elementos rotativos, holgura en acoples o chavetas, o falta de lubricación. Verificar estado de rodamientos y alineación del conjunto.'
-  },
-  CALOR:{
-    causa:'Sobrecarga eléctrica / falta de refrigeración / fricción excesiva',
-    det:'El sobrecalentamiento apunta a: sobrecarga del motor por atascamiento mecánico, ventilación obstruida (filtros o rejillas tapadas), falla en sistema de refrigeración, o ajuste de protecciones incorrecto. Revisar corriente de operación vs. nominal.'
-  },
-  FUGA:{
-    causa:'Desgaste de sellos / empaques / conexiones flojas',
-    det:'Las fugas indican deterioro de empaques o sellos mecánicos por ciclos de trabajo, presión excesiva en el sistema, o apriete insuficiente en conexiones. En fugas de aceite verificar nivel y tipo de lubricante correcto.'
-  },
-  DESGASTE:{
-    causa:'Fin de vida útil del componente / falta de mantenimiento preventivo',
-    det:'El desgaste excesivo o rotura sugiere: componente que superó su vida útil sin reemplazo preventivo, material inadecuado para la aplicación, lubricación insuficiente o contaminada, o sobrecarga continua de operación.'
-  },
-  ELECTRICO:{
-    causa:'Corto circuito / sobretensión / conexión deficiente',
-    det:'La falla eléctrica puede ser: cortocircuito por aislamiento deteriorado, sobretensión en la red, falsos contactos en terminales o bornes flojos, humedad en conexiones, o falla en dispositivos de protección (fusibles, térmicos, disyuntores).'
-  },
-  ALARMA:{
-    causa:'Parámetro fuera de rango / falla en sensor o actuador',
-    det:'Un paro por alarma indica: variable de proceso fuera de setpoint (temperatura, presión, velocidad), falla o descalibración de sensor, actuador que no responde, o condición de seguridad activada. Revisar histórico de alarmas en HMI/PLC.'
-  },
-  ALINEACION:{
-    causa:'Desajuste por vibración acumulada / falta de verificación periódica',
-    det:'La desalineación o desajuste proviene de: vibración acumulada que afloja anclajes y acoples, cambios de temperatura (expansión térmica), impactos durante operación, o mantenimiento previo incompleto sin verificar alineación final.'
-  },
-  CORROSION:{
-    causa:'Exposición a agentes corrosivos / falta de protección superficial',
-    det:'La corrosión avanzada indica: exposición prolongada a humedad, ácidos o agentes de limpieza CIP, falta de recubrimiento o galvanizado, o material no adecuado para el ambiente de la planta. Evaluar cambio de material o protección con pintura epóxica.'
-  },
-  SENSOR:{
-    causa:'Contaminación del sensor / cable dañado / pérdida de referencia',
-    det:'El error de sensor o encoder apunta a: cabeza sensora sucia o desplazada, cable dañado por roce o aplastamiento, conector oxidado, pérdida de referencia cero en encoder, o interferencia electromagnética en zona de alta frecuencia.'
-  },
-  FATIGA:{
-    causa:'Carga cíclica acumulada / concentrador de esfuerzos',
-    det:'La fatiga de material ocurre por: carga cíclica que supera el límite de fatiga del material, presencia de muescas, grietas o cambios bruscos de sección que concentran esfuerzos, o material con defecto de fabricación. Revisar diseño y considerar upgrade de material.'
-  },
+  L1:['Troqueladora 1','Troqueladora 2','Troqueladora 3','Transportador L1'],
+  L2:['Cizalla','Soldadora','Barnizadora','Horno','Acuelladora','Cerradora','Hermeticidad','Codificadora'],
+  L3:['Troqueladora 1','Troqueladora 2','Troqueladora 3','Transportador L3'],
+  L4:['Troqueladora 1','Troqueladora 2','Troqueladora 3','Transportador L4'],
+  L7:['Cizalla','Soldadora','Barnizadora','Horno','Acuelladora','Cerradora','Hermeticidad','Codificadora'],
+  L8:['Cizalla','Soldadora','Barnizadora','Horno','Acuelladora','Cerradora','Hermeticidad','Codificadora'],
+  PAL:['Paletizador L1','Paletizador L3','Paletizador L4','Paletizador L7y2','Paletizador L8'],
+  SRV:['Compresor','HVAC','Subestación','Red neumática','Calderas'],
 };
 
-// ─── DB ───
+// Estado del form
+let F = {
+  lineaK:'', lineaLabel:'', maq:'',
+  tipoFalla:'', prioridad:'', estadoFinal:'',
+  firmaTec:false, firmaUsr:false
+};
+let _p = null; // pending record
+
+// ── UTILIDADES ──
+function hoy(){const d=new Date();return d.getFullYear()+'-'+zp(d.getMonth()+1)+'-'+zp(d.getDate());}
+function zp(n){return String(n).padStart(2,'0');}
+function pad4(n){return String(n).padStart(4,'0');}
 function loadDB(){try{return JSON.parse(localStorage.getItem(DB_KEY))||[];}catch{return[];}}
 function saveDB(d){localStorage.setItem(DB_KEY,JSON.stringify(d));}
 function nextNum(){const db=loadDB();return db.length?Math.max(...db.map(r=>r.num))+1:1;}
-function updateBadge(){document.getElementById('nextId').textContent='MC'+String(nextNum()).padStart(4,'0');}
+function updBadge(){const el=document.getElementById('foliobadge');if(el)el.textContent='RF-'+pad4(nextNum());}
+function toast(msg,ms=2600){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),ms);
+}
+function timeMins(t){
+  if(!t||!t.includes(':'))return null;
+  const[h,m]=t.split(':').map(Number);
+  if(isNaN(h)||isNaN(m))return null;
+  return h*60+m;
+}
+function fmtMins(m){
+  if(m==null||isNaN(m))return '—';
+  const h=Math.floor(m/60),min=m%60;
+  return (h>0?h+'h ':'')+min+'min';
+}
 
-let _pendingRec=null, _pendingNumStr=null;
-let accN=0, compN=0; // declarados antes del IIFE para evitar TDZ con let
-
-// ─── INIT ───
+// Corrección de badge al iniciar
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('foliobadge').textContent='RF-'+pad4(nextNum());
+});
+// Fallback inmediato
 (function(){
-  const d=new Date();
-  document.getElementById('fecha').value=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-  updateBadge(); addAcc();
+  const el=document.getElementById('foliobadge');
+  if(el) el.textContent='RF-'+pad4(nextNum());
+  // fecha default
+  const fd=document.getElementById('fechaFalla');
+  if(fd) fd.value=hoy();
 })();
 
-// ─── TABS ───
-function goTab(btn,tab){
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('panel-'+tab).classList.add('active');
-  if(tab==='db') renderDB();
+// ── TABS ──
+function goTab(btn,id){
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('act'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('act'));
+  btn.classList.add('act');
+  document.getElementById('panel-'+id).classList.add('act');
+  if(id==='hist') renderHist();
 }
 
-// ─── PROGRESO ───
-function updateProg(){
-  const s1=document.getElementById('cuadrilla').value && document.getElementById('fecha').value;
-  const s2=document.getElementById('linea').value && document.getElementById('maquina').value;
-  const s3=document.getElementById('hDeteccion').value;
-  document.getElementById('ps1').className='prog-step '+(s1?'done':'active');
-  document.getElementById('ps2').className='prog-step '+(s2?'done':s1?'active':'');
-  document.getElementById('ps3').className='prog-step '+(s3?'done':s2?'active':'');
-  document.getElementById('ps4').className='prog-step '+(s3&&s2?'active':'');
+// ── LINEA → MÁQUINAS ──
+function selLinea(el,k,label){
+  F.lineaK=k; F.lineaLabel=label; F.maq='';
+  document.querySelectorAll('#chips-linea .chip').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  // Rellenar chips de máquina
+  const sub=document.getElementById('chips-maq');
+  sub.innerHTML=(MQ[k]||[]).map(m=>`<div class="chip" onclick="selMaq(this,'${m}')">${m}</div>`).join('');
+  // Mostrar bloques de máquina y equipo
+  document.getElementById('maq-wrap').style.display='block';
+  document.getElementById('equipo-wrap').style.display='none';
+  document.getElementById('nombreEquipo').value='';
+  calcMtbfAuto();
+  chkSec1();
+}
+function selMaq(el,maq){
+  F.maq=maq;
+  document.querySelectorAll('#chips-maq .chip').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  // Auto-rellenar nombre del equipo y mostrarlo
+  const equiWrap=document.getElementById('equipo-wrap');
+  const equiInput=document.getElementById('nombreEquipo');
+  equiInput.value=maq;
+  equiWrap.style.display='block';
+  calcMtbfAuto();
+  chkSec1();
 }
 
-// ─── CUADRILLA → TÉCNICOS ───
-function onCuadrilla(){
-  const cuad=document.getElementById('cuadrilla').value;
-  const card=document.getElementById('tecCard'),list=document.getElementById('tecList');
-  if(!cuad){card.classList.remove('on');return;}
-  const tecs=CUADRILLAS[cuad]||[];
-  list.innerHTML=tecs.map((t,i)=>`
-    <label class="tec-row">
-      <input type="radio" class="tec-radio" name="tecLider" value="${t.n}" id="tec${i}">
-      <div class="tec-info">
-        <div class="tec-name">${t.n}</div>
-        <div class="tec-meta">${t.p} · ${t.l}${t.id?' · #'+t.id:''}</div>
-      </div>
-      <span class="tec-badge">${cuad}</span>
-    </label>`).join('');
-  card.classList.add('on');
-  // Auto-seleccionar primero si solo hay uno
-  if(tecs.length===1) document.getElementById('tec0').checked=true;
+// ── CHIPS GENÉRICOS ──
+function selChip(el,campo,valor,cls){
+  F[campo]=valor;
+  const grupo=el.parentElement;
+  grupo.querySelectorAll('.chip').forEach(c=>{
+    c.classList.remove('sel','sel-red','sel-amber','sel-blue','sel-green','sel-purple');
+  });
+  el.classList.add(cls||'sel');
+  if(campo==='tipoFalla') chkSec4();
+  if(campo==='estadoFinal') chkSec5();
+}
+function selPrior(el,val,cls){
+  F.prioridad=val;
+  document.querySelectorAll('.prior-chips .chip').forEach(c=>{
+    c.classList.remove('sel','sel-red','sel-amber','sel-blue','sel-green');
+  });
+  el.classList.add(cls);
+  chkSec2();
 }
 
-// ─── MÁQUINAS ───
-function actualizarMaquinas(){
-  const k=document.getElementById('linea').value,sel=document.getElementById('maquina');
-  sel.innerHTML='';
-  if(!k){sel.innerHTML='<option value="">— Selecciona línea primero —</option>';return;}
-  sel.innerHTML='<option value="">— Selecciona máquina —</option>';
-  (MQ[k]||[]).forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=m;sel.appendChild(o);});
+// ── FIRMAS ──
+function toggleFirma(boxId,txtId){
+  const box=document.getElementById(boxId);
+  const key=boxId==='firmaT'?'firmaTec':'firmaUsr';
+  F[key]=!F[key];
+  box.classList.toggle('signed',F[key]);
+  document.getElementById(txtId).textContent=F[key]
+    ?(boxId==='firmaT'?'✅ Técnico confirmado':'✅ Operador confirmado')
+    :(boxId==='firmaT'?'Técnico — toca para confirmar':'Usuario / Operador — toca para confirmar');
 }
 
-// ─── MTBF AUTOMÁTICO desde historial ───
+// ── CALCULAR TIEMPOS ──
+function calcTiempos(){
+  const hFalla  = document.getElementById('hFalla').value;
+  const hIni    = document.getElementById('hInicioInt').value;
+  const hFin    = document.getElementById('hFinInt').value;
+
+  const mFalla  = timeMins(hFalla);
+  const mIni    = timeMins(hIni);
+  const mFin    = timeMins(hFin);
+
+  // Downtime = hora falla → fin intervención
+  let downtime=null;
+  if(mFalla!==null && mFin!==null){
+    downtime=mFin-mFalla;
+    if(downtime<0)downtime+=1440;
+    if(downtime>1440)downtime=null;
+  }
+  // MTTR = inicio intervención → fin (tiempo activo de reparación)
+  let mttr=null;
+  if(mIni!==null && mFin!==null){
+    mttr=mFin-mIni;
+    if(mttr<0)mttr+=1440;
+    if(mttr>1440)mttr=null;
+  }
+
+  document.getElementById('kDowntime').textContent = downtime!==null ? fmtMins(downtime) : '—';
+  document.getElementById('kMttr').textContent      = mttr!==null     ? fmtMins(mttr)     : '—';
+
+  window._downtime  = downtime;
+  window._mttr      = mttr;
+
+  chkSec3();
+}
+
+// ── MTBF AUTOMÁTICO desde historial ──
 function calcMtbfAuto(){
-  const linea=document.getElementById('linea').value;
-  const maq=document.getElementById('maquina').value;
-  if(!linea||!maq) return;
+  const el   = document.getElementById('kMtbf');
+  const src  = document.getElementById('kMtbfSrc');
+  if(!F.lineaK || !F.maq){
+    el.textContent='— selecciona equipo'; src.textContent='MTBF · desde historial';
+    window._mtbf=null; return;
+  }
   const db=loadDB();
-  // Buscar el registro más reciente del mismo equipo
-  const same=db.filter(r=>r.lineaK===linea && r.maq===maq).sort((a,b)=>b.num-a.num);
-  const el=document.getElementById('mtbfVal'), src=document.getElementById('mtbfSrc');
-  if(same.length===0){
-    el.textContent='N/D'; src.textContent='primer registro de este equipo';
-    window._mtbfAuto=null; return;
+  const same=db.filter(r=>r.lineaK===F.lineaK && r.maq===F.maq).sort((a,b)=>b.num-a.num);
+  if(!same.length){
+    el.textContent='Primer registro';
+    src.textContent='MTBF — sin historial previo de este equipo';
+    window._mtbf=null; return;
   }
   const last=same[0];
-  // Calcular horas entre la última falla y ahora
-  const fechaAhora=new Date();
-  let fechaUltima=new Date(last.fecha+'T'+(last.hFin||'00:00'));
-  let diffH=Math.round((fechaAhora-fechaUltima)/3600000);
-  if(diffH<0||diffH>8760) diffH=null; // sanity check
+  const ahora=new Date();
+  const ultima=new Date((last.fecha||hoy())+'T'+(last.hFinInt||'00:00'));
+  let diffH=Math.round((ahora-ultima)/3600000);
+  if(diffH<0||diffH>8760) diffH=null;
   if(diffH!==null){
-    el.textContent=diffH+'h';
-    src.textContent='↑ auto · última falla hace '+diffH+'h';
-    window._mtbfAuto=diffH;
+    const d=Math.floor(diffH/24),h=diffH%24;
+    el.textContent=(d>0?d+'d ':'')+h+'h';
+    src.textContent='MTBF · última falla: RF-'+pad4(last.num)+' ('+diffH+'h atrás)';
+    window._mtbf=diffH;
   } else {
-    el.textContent='N/D'; src.textContent='datos insuficientes';
-    window._mtbfAuto=null;
+    el.textContent='N/D'; src.textContent='MTBF — datos insuficientes';
+    window._mtbf=null;
   }
-  calcMetrics();
 }
 
-// ─── CALCULAR MÉTRICAS ───
-function timeMins(t){
-  if(!t||typeof t!=='string'||!t.includes(':')) return null;
-  const parts=t.split(':').map(Number);
-  if(parts.length<2||isNaN(parts[0])||isNaN(parts[1])) return null;
-  return parts[0]*60+parts[1];
+// ── VALIDACIÓN SECCIONES ──
+function chkSec1(){const ok=!!(F.lineaK&&F.maq);document.getElementById('s1').classList.toggle('done',ok);}
+function chkSec2(){
+  const ok=!!(document.getElementById('sintoma').value.trim()&&F.prioridad);
+  document.getElementById('s2').classList.toggle('done',ok);
 }
-
-function calcMetrics(){
-  const hI=document.getElementById('hInicioInt').value||'';
-  const hF=document.getElementById('hFinInt').value||'';
-  const hD=document.getElementById('hDeteccion').value||'';
-  const mI=timeMins(hI), mF=timeMins(hF), mD=timeMins(hD);
-
-  // TTM = detección → fin — requiere AMBOS campos
-  let ttm=null;
-  if(mD!==null && mF!==null){
-    ttm=mF-mD;
-    if(ttm<0) ttm+=1440;
-    // sanidad: no puede superar 24h (1440 min)
-    if(ttm>1440) ttm=null;
-  }
-
-  // MTTR = inicio → fin — requiere AMBOS campos
-  let mttr=null;
-  if(mI!==null && mF!==null){
-    mttr=mF-mI;
-    if(mttr<0) mttr+=1440;
-    if(mttr>1440) mttr=null;
-  }
-
-  const mtbf=window._mtbfAuto||null;
-
-  let disp=null;
-  if(mtbf!==null && mttr!==null && mttr>0) disp=(mtbf/(mtbf+mttr/60))*100;
-
-  document.getElementById('ttmVal').textContent  = ttm!==null  ? ttm+'min'            : '—';
-  document.getElementById('mttrVal').textContent  = mttr!==null ? mttr+'min'           : '—';
-  if(!window._mtbfAuto) document.getElementById('mtbfVal').textContent = '—';
-  document.getElementById('dispVal').textContent  = disp!==null ? disp.toFixed(1)+'%' : '—';
-
-  window._mttrCalc=mttr;
-  window._ttmCalc=ttm;
-  window._dispCalc=disp;
+function chkSec3(){const ok=!!(document.getElementById('hFalla').value&&document.getElementById('hFinInt').value);document.getElementById('s3').classList.toggle('done',ok);}
+function chkSec4(){
+  const ok=!!(document.getElementById('causaRaiz').value.trim()&&document.getElementById('trabajoRealizado').value.trim());
+  document.getElementById('s4').classList.toggle('done',ok);
 }
+function chkSec5(){const ok=!!(document.getElementById('tecnico').value&&F.estadoFinal);document.getElementById('s5').classList.toggle('done',ok);}
 
-// ─── CAUSA RAÍZ AUTOMÁTICA ───
-function onModoFalla(){
-  const modo=document.getElementById('modoFalla').value;
-  const box=document.getElementById('crBox');
-  if(!modo){box.classList.remove('on');return;}
-  const cr=CR_MAP[modo];
-  if(!cr){box.classList.remove('on');return;}
-  document.getElementById('crVal').textContent=cr.causa;
-  document.getElementById('crDet').textContent=cr.det;
-  box.classList.add('on');
-}
+// ── GENERAR REPORTE ──
+function generar(){
+  const linea    = F.lineaLabel;
+  const maq      = F.maq;
+  const equipo   = document.getElementById('nombreEquipo').value.trim()||maq;
+  const idActivo = '';
+  const marca    = '';
+  const modelo   = '';
+  const sintoma  = document.getElementById('sintoma').value.trim();
+  const prior    = F.prioridad;
+  const report   = document.getElementById('reportante').value;
+  const fecha    = document.getElementById('fechaFalla').value;
+  const hFalla   = document.getElementById('hFalla').value;
+  const hIni     = document.getElementById('hInicioInt').value;
+  const hFin     = document.getElementById('hFinInt').value;
+  const causaR   = document.getElementById('causaRaiz').value.trim();
+  const trabajo  = document.getElementById('trabajoRealizado').value.trim();
+  const refacc   = document.getElementById('refacciones').value.trim();
+  const estado   = F.estadoFinal;
+  const tec      = document.getElementById('tecnico').value;
+  const obs      = document.getElementById('observaciones').value.trim();
 
-// ─── ACCIONES ───
-function addAcc(){
-  accN++;
-  const list=document.getElementById('accList');
-  const d=document.createElement('div');
-  d.className='acc-item'; d.id='acc-'+accN;
-  const allTecs=Object.values(CUADRILLAS).flat().filter(t=>t.n&&!t.n.startsWith('(')).map(t=>`<option>${t.n}</option>`).join('');
-  d.innerHTML=`<div class="af">
-    <div class="acc-num">ACCIÓN #${accN}</div>
-    <textarea placeholder="Describe la acción realizada..."></textarea>
-    <div style="display:flex;gap:7px;">
-      <select style="flex:1;font-size:.8rem;padding:6px 8px;">
-        <option value="">— Técnico ejecutor —</option>${allTecs}
-      </select>
-      <input type="time" style="width:100px;font-size:.82rem;padding:6px 8px;">
-    </div>
-  </div>
-  <button class="btn-rm" onclick="document.getElementById('acc-${accN}').remove()">✕</button>`;
-  list.appendChild(d);
-}
+  if(!F.lineaK||!F.maq){toast('⚠️ Selecciona línea y máquina');return;}
+  if(!sintoma){toast('⚠️ Describe el síntoma de la falla');return;}
+  if(!prior){toast('⚠️ Selecciona la prioridad');return;}
+  if(!hFalla||!hFin){toast('⚠️ Ingresa hora de falla y hora de fin');return;}
+  if(!causaR||!trabajo){toast('⚠️ Completa causa raíz y trabajo realizado');return;}
+  if(!tec){toast('⚠️ Selecciona el técnico responsable');return;}
 
-// ─── GENERAR REPORTE ───
-function generarReporte(){
-  const cuad   =document.getElementById('cuadrilla').value;
-  const fecha  =document.getElementById('fecha').value;
-  const turno  =document.getElementById('turno').value;
-  const tipoF  =document.getElementById('tipoFalla').value;
-  const lineaK =document.getElementById('linea').value;
-  const maq    =document.getElementById('maquina').value;
-  const comp   =document.getElementById('componente').value.trim();
-  const modo   =document.getElementById('modoFalla').value;
-  const hDet   =document.getElementById('hDeteccion').value;
-  const hIni   =document.getElementById('hInicioInt').value;
-  const hFin   =document.getElementById('hFinInt').value;
-  const desc   =document.getElementById('descripcion').value.trim();
-  const estado =document.getElementById('estadoCierre').value;
-  const seguim =document.getElementById('seguimiento').value;
+  const num     = nextNum();
+  const folio   = 'RF-'+pad4(num);
+  const fechaFmt= fecha?fecha.split('-').reverse().join('/'):'—';
+  const down    = window._downtime!=null ? fmtMins(window._downtime) : '—';
+  const mttr    = window._mttr!=null     ? fmtMins(window._mttr)     : '—';
+  const mtbf    = window._mtbf!=null     ? (Math.floor(window._mtbf/24)>0?Math.floor(window._mtbf/24)+'d ':'')+(window._mtbf%24)+'h' : 'N/D';
 
-  if(!cuad||!lineaK||!maq||!hDet||!desc){
-    showToast('⚠️ Faltan datos: cuadrilla, equipo, hora de detección y descripción');return;
-  }
-
-  const tecSel=document.querySelector('input[name="tecLider"]:checked');
-  const lider =tecSel?tecSel.value:'(no seleccionado)';
-
-  const acciones=[];
-  document.querySelectorAll('.acc-item').forEach((item,i)=>{
-    const txt  =item.querySelector('textarea')?.value.trim();
-    const resp =item.querySelector('select')?.value||'';
-    const hora =item.querySelector('input[type=time]')?.value||'';
-    if(txt) acciones.push({n:i+1,txt,resp,hora});
-  });
-
-  const mttr  =window._mttrCalc||null;
-  const ttm   =window._ttmCalc||null;
-  const mtbf  =window._mtbfAuto||null;
-  const disp  =window._dispCalc||null;
-  const crData=CR_MAP[modo]||null;
-
-  const num    =nextNum();
-  const numStr ='MC'+String(num).padStart(4,'0');
-  const lineaLb=LL[lineaK]||lineaK;
-  const fechaFmt=fecha?fecha.split('-').reverse().join('/'):'—';
-  const estadoLb={CERRADO:'✅ CERRADO',TEMPORAL:'⚠️ REPARACIÓN TEMPORAL',PENDIENTE:'🔴 PENDIENTE'}[estado]||estado;
-  const seguimLb={NO:'No requiere',MP:'Programar preventivo',INSP:'Inspección seguimiento',PROV:'Cotizar refacción'}[seguim]||seguim;
-
-  _pendingRec={num,cuad,fecha,turno,tipoF,lineaK,lineaLabel:lineaLb,maq,comp,modoFalla:modo,
-    hDet,hIni,hFin,ttm,mttr,mtbf,disp,lider,desc,
-    causaRaiz:crData?crData.causa:'—',causaDetalle:crData?crData.det:'—',
-    acciones,estado,seguim};
-  _pendingNumStr=numStr;
-
-  let acStr='';
-  acciones.forEach(a=>{
-    acStr+=`  ${a.n}. ${a.txt}`;
-    if(a.resp) acStr+=` [${a.resp}]`;
-    if(a.hora) acStr+=` (${a.hora})`;
-    acStr+='\n';
-  });
-  if(!acStr) acStr='  — Sin acciones registradas —\n';
-
-  const msg=
-`🔧 MANTENIMIENTO CORRECTIVO ${numStr}
-━━━━━━━━━━━━━━━━━━━━━━━━
-🏭 ${lineaLb} · ⚙️ ${maq}${comp?' · '+comp:''}
-📅 ${fechaFmt} · ${turno||'—'}
-👥 Cuadrilla ${cuad} · 👷 ${lider}
-⚡ Falla: ${tipoF||'—'} — ${(modo?modo.toLowerCase():'—')}
+  const msg =
+`⚡ FALLA ${folio} · ${fechaFmt}
+━━━━━━━━━━━━━━━━━━━━━━
+📍 ${linea} · ${maq}
+🏷️ ${equipo}
+🚨 Prioridad: ${prior}
+👤 Reportó: ${report||'—'}
 
 ⏱️ TIEMPOS
-• Detección:          ${hDet||'—'}
-• Inicio intervención: ${hIni||'—'}
-• Fin / marcha:        ${hFin||'—'}
+• Hora de falla:         ${hFalla||'—'}
+• Inicio intervención:   ${hIni||'—'}
+• Fin / vuelta marcha:   ${hFin||'—'}
 
 📊 INDICADORES
-• MTTR:  ${mttr!=null?mttr+' min':'—'}
-• MTBF:  ${mtbf!=null?mtbf+' h':'—'}
-• Disp.: ${disp!=null?disp.toFixed(1)+'%':'—'}
+• Downtime:  ${down}
+• MTTR:      ${mttr}
+• MTBF:      ${mtbf}
 
-📋 ¿QUÉ OCURRIÓ?
-${desc}
+🔍 SÍNTOMA:
+${sintoma}
 
-🔎 CAUSA RAÍZ (auto)
-${crData?crData.causa:'—'}
-${crData?crData.det:''}
+🔎 CAUSA RAÍZ:
+${causaR}
 
-🛠️ ACCIONES REALIZADAS
-${acStr.trimEnd()}
+🛠️ TRABAJO REALIZADO:
+${trabajo}
+${refacc?'\n📦 REFACCIONES:\n'+refacc:''}
+🏁 Estado final: ${estado||'—'}
+${obs?'\n💡 RECOMENDACIONES:\n'+obs:''}
+👷 Técnico: ${tec}
+━━━━━━━━━━━━━━━━━━━━━━
+Envases Universales · ${folio}`.replace(/\n{3,}/g,'\n\n').trim();
 
-🏁 CIERRE: ${estadoLb}
-📌 Seguimiento: ${seguimLb}
-━━━━━━━━━━━━━━━━━━━━━━━━
-Envases Universales · ${numStr}`;
+  _p = {
+    num, folio, fecha, fechaFmt, linea, lineaK:F.lineaK, maq, equipo,
+    idActivo, marca, modelo, prior, sintoma,
+    reportante:report, hFalla, hIni, hFin,
+    downtime:window._downtime, mttr:window._mttr, mtbf:window._mtbf,
+    downStr:down, mttrStr:mttr, mtbfStr:mtbf,
+    tipoFalla:F.tipoFalla, causaR, trabajo, refacc,
+    estado, tec, obs,
+    firmaTec:F.firmaTec, firmaUsr:F.firmaUsr,
+    msg
+  };
 
-  document.getElementById('rptMsg').textContent=msg;
-
-  const btn=document.getElementById('btnCopiar');
-  btn.classList.remove('copiado');
-  btn.textContent='📋 Copiar al portapapeles';
-  document.getElementById('confirmPanel').classList.remove('on');
+  document.getElementById('msgPre').textContent=msg;
+  const bc=document.getElementById('btnCopy');
+  bc.textContent='📋 Copiar al portapapeles'; bc.classList.remove('done');
+  document.getElementById('confirmBox').classList.remove('on');
   document.getElementById('postBtns').classList.remove('on');
 
-  const wrap=document.getElementById('rptWrap');
-  wrap.classList.add('on');
-  setTimeout(()=>wrap.scrollIntoView({behavior:'smooth',block:'start'}),50);
+  const r=document.getElementById('result');
+  r.classList.add('on');
+  setTimeout(()=>r.scrollIntoView({behavior:'smooth',block:'start'}),60);
 }
 
-// ─── COPIAR ───
-function copiarReporte(){
-  const msg=document.getElementById('rptMsg').textContent;
-  if(!msg) return;
-  const exito=()=>{
-    const btn=document.getElementById('btnCopiar');
-    btn.textContent='✅ ¡Copiado!'; btn.classList.add('copiado');
-    document.getElementById('confirmPanel').classList.add('on');
+// ── COPIAR ──
+function copiar(){
+  if(!_p) return;
+  const ok=()=>{
+    document.getElementById('btnCopy').textContent='✅ ¡Copiado!';
+    document.getElementById('btnCopy').classList.add('done');
+    document.getElementById('confirmBox').classList.add('on');
     document.getElementById('postBtns').classList.add('on');
     document.getElementById('postBtns').scrollIntoView({behavior:'smooth',block:'nearest'});
-    showToast('📋 Texto copiado en el portapapeles',2500);
+    toast('📋 Copiado — pégalo en WhatsApp',2200);
   };
   if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(msg).then(exito).catch(()=>fallbackCopy(msg,exito));
-  } else {
-    fallbackCopy(msg,exito);
-  }
+    navigator.clipboard.writeText(_p.msg).then(ok).catch(()=>fbCopy(_p.msg,ok));
+  } else fbCopy(_p.msg,ok);
 }
-function fallbackCopy(text,cb){
+function fbCopy(txt,cb){
   try{
     const ta=document.createElement('textarea');
-    ta.value=text; ta.setAttribute('readonly','');
-    ta.style.cssText='position:fixed;top:0;left:0;opacity:0;pointer-events:none;';
-    document.body.appendChild(ta); ta.focus(); ta.select(); ta.setSelectionRange(0,99999);
-    const ok=document.execCommand('copy');
+    ta.value=txt;ta.style.cssText='position:fixed;opacity:0;top:0;left:0;pointer-events:none;';
+    document.body.appendChild(ta);ta.focus();ta.select();ta.setSelectionRange(0,99999);
+    if(document.execCommand('copy')) cb();
+    else toast('⚠️ Copia el texto manualmente',3000);
     document.body.removeChild(ta);
-    if(ok) cb(); else showToast('⚠️ Copia el texto manualmente',3500);
-  }catch(e){showToast('⚠️ Copia el texto manualmente',3500);}
+  }catch(e){toast('⚠️ Copia el texto manualmente',3000);}
 }
 
-// ─── REGISTRAR Y LIMPIAR ───
-function registrarYLimpiar(){
-  if(!_pendingRec){showToast('⚠️ Genera el reporte primero');return;}
+// ── GUARDAR ──
+function guardar(){
+  if(!_p){toast('Genera el reporte primero');return;}
   const db=loadDB();
-  if(db.find(r=>r.num===_pendingRec.num)){showToast('ℹ️ Ya registrado');limpiarFormulario();return;}
-  db.push(_pendingRec); saveDB(db); updateBadge();
-  enviarASheets(_pendingRec);
-  exportExcelAuto(_pendingRec,_pendingNumStr);
-  showToast(`✅ ${_pendingNumStr} registrado`,3000);
-  _pendingRec=null; _pendingNumStr=null;
-  setTimeout(limpiarFormulario,400);
+  if(db.find(r=>r.num===_p.num)){toast('Ya registrado');limpiar();return;}
+  db.push(_p); saveDB(db);
+  actualizarBadge();
+  enviarSheets(_p);
+  exportExcelAuto(_p);
+  toast('✅ Guardado · Excel descargado',3000);
+  _p=null;
+  setTimeout(limpiar,400);
+}
+function descartar(){
+  if(!confirm('¿Descartar sin guardar?'))return;
+  _p=null; limpiar();
 }
 
-function soloLimpiar(){
-  if(!confirm('¿Descartar este reporte sin registrarlo?')) return;
-  _pendingRec=null; _pendingNumStr=null;
-  limpiarFormulario();
+function actualizarBadge(){
+  const el=document.getElementById('foliobadge');
+  if(el) el.textContent='RF-'+pad4(nextNum());
 }
 
-function limpiarFormulario(){
-  document.getElementById('rptWrap').classList.remove('on');
-  ['cuadrilla','turno','tipoFalla','linea','maquina','modoFalla','estadoCierre','seguimiento']
-    .forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  ['componente','descripcion'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  ['hDeteccion','hInicioInt','hFinInt'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  document.getElementById('maquina').innerHTML='<option value="">— Selecciona línea primero —</option>';
-  document.getElementById('accList').innerHTML='';
-  document.getElementById('tecCard').classList.remove('on');
-  document.getElementById('tecList').innerHTML='';
-  document.getElementById('crBox').classList.remove('on');
-  ['mttrVal','mtbfVal','ttmVal','dispVal'].forEach(id=>document.getElementById(id).textContent='—');
-  document.getElementById('mtbfSrc').textContent='desde historial';
-  window._mtbfAuto=null; window._mttrCalc=null; window._ttmCalc=null; window._dispCalc=null;
-  accN=0; addAcc();
-  const d=new Date();
-  document.getElementById('fecha').value=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-  updateBadge(); updateProg();
+function limpiar(){
+  document.getElementById('result').classList.remove('on');
+  document.querySelectorAll('.chip').forEach(c=>{
+    c.classList.remove('sel','sel-red','sel-amber','sel-blue','sel-green','sel-purple');
+  });
+  document.getElementById('chips-maq').innerHTML='';
+  document.getElementById('maq-wrap').style.display='none';
+  document.getElementById('equipo-wrap').style.display='none';
+  ['nombreEquipo','sintoma','causaRaiz',
+   'trabajoRealizado','refacciones','observaciones'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  ['hFalla','hInicioInt','hFinInt'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  document.getElementById('reportante').value='';
+  document.getElementById('tecnico').value='';
+  ['kDowntime','kMttr'].forEach(id=>document.getElementById(id).textContent='—');
+  document.getElementById('kMtbf').textContent='— selecciona equipo';
+  document.getElementById('kMtbfSrc').textContent='MTBF · tiempo desde la última falla registrada de este equipo';
+  // firmas eliminadas del form
+  ['s1','s2','s3','s4','s5'].forEach(id=>document.getElementById(id).classList.remove('done'));
+  // fecha default
+  document.getElementById('fechaFalla').value=hoy();
+  F={lineaK:'',lineaLabel:'',maq:'',tipoFalla:'',prioridad:'',estadoFinal:'',firmaTec:false,firmaUsr:false};
+  window._downtime=null; window._mttr=null; window._mtbf=null;
+  actualizarBadge();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-// ─── HISTORIAL ───
-function renderDB(){
+// ── HISTORIAL ──
+function renderHist(){
   const db=loadDB().sort((a,b)=>b.num-a.num);
-  const body=document.getElementById('dbBody'), empty=document.getElementById('emptyMsg');
-  document.getElementById('dbTotal').textContent=db.length+' registro'+(db.length!==1?'s':'');
-  renderKPIs(db); body.innerHTML='';
-  if(!db.length){empty.style.display='block';return;}
+  document.getElementById('nReg').textContent=db.length+' registros';
+  const body=document.getElementById('tblBody');
+  const empty=document.getElementById('emptyMsg');
+  body.innerHTML='';
+
+  // KPIs globales
+  const hkpi=document.getElementById('hkpiRow');
+  if(!db.length){empty.style.display='block';hkpi.innerHTML='';return;}
   empty.style.display='none';
+
+  const mttrArr = db.filter(r=>r.mttr!=null).map(r=>r.mttr);
+  const downArr = db.filter(r=>r.downtime!=null).map(r=>r.downtime);
+  const mtbfArr = db.filter(r=>r.mtbf!=null).map(r=>r.mtbf);
+  const avg = a=>a.length?a.reduce((s,v)=>s+v,0)/a.length:null;
+  const aMttr=avg(mttrArr), aDown=avg(downArr), aMtbf=avg(mtbfArr);
+
+  hkpi.innerHTML=`
+    <div class="hkpi tot"><div class="v">${db.length}</div><div class="l">Total fallas</div></div>
+    <div class="hkpi down"><div class="v">${aDown!=null?fmtMins(Math.round(aDown)):'—'}</div><div class="l">Downtime prom.</div></div>
+    <div class="hkpi mttr"><div class="v">${aMttr!=null?fmtMins(Math.round(aMttr)):'—'}</div><div class="l">MTTR prom.</div></div>
+    <div class="hkpi mtbf"><div class="v">${aMtbf!=null?(Math.floor(aMtbf/24)>0?Math.floor(aMtbf/24)+'d ':'')+(Math.round(aMtbf)%24)+'h':'—'}</div><div class="l">MTBF prom.</div></div>`;
+
+  const priorColor={'URGENTE':'#f87171','ALTA':'#fdba74','MEDIA':'#fde68a','BAJA':'#86efac'};
   db.forEach(r=>{
     const tr=document.createElement('tr');
-    const fd=r.fecha?r.fecha.split('-').reverse().join('/'):'—';
-    const pill=CP[r.cuad]||'pA';
-    const eLb={CERRADO:'✅',TEMPORAL:'⚠️',PENDIENTE:'🔴'}[r.estado]||'—';
-    const liderShort=(r.lider||'—').split(' ').slice(0,2).join(' ');
+    const pc=priorColor[r.prior]||'var(--label)';
     tr.innerHTML=`
-      <td class="idc">MC${String(r.num).padStart(4,'0')}</td>
-      <td>${fd}</td>
-      <td><span class="pill ${pill}">C.${r.cuad}</span></td>
-      <td style="font-size:.7rem;">${liderShort}</td>
-      <td>${r.lineaLabel||'—'}</td>
+      <td class="folio">${r.folio}</td>
+      <td style="font-size:.7rem;">${r.fechaFmt||'—'}</td>
+      <td>${r.linea||'—'}</td>
       <td style="font-size:.7rem;">${r.maq||'—'}</td>
-      <td style="font-size:.7rem;">${r.tipoF||'—'}</td>
-      <td style="color:var(--red);font-family:'Barlow Semi Condensed',sans-serif;">${r.mttr!=null?r.mttr+'m':'—'}</td>
-      <td style="color:var(--green);font-family:'Barlow Semi Condensed',sans-serif;">${r.mtbf!=null?r.mtbf+'h':'—'}</td>
-      <td style="color:var(--amber);font-family:'Barlow Semi Condensed',sans-serif;">${r.disp!=null?parseFloat(r.disp).toFixed(1)+'%':'—'}</td>
-      <td>${eLb}</td>
-      <td><button class="del-btn" onclick="delRec(${r.num})">🗑</button></td>`;
+      <td style="font-size:.69rem;color:${pc};">${r.prior||'—'}</td>
+      <td style="font-family:'DM Mono',monospace;color:var(--amber);">${r.downStr||'—'}</td>
+      <td style="font-family:'DM Mono',monospace;color:var(--red);">${r.mttrStr||'—'}</td>
+      <td style="font-family:'DM Mono',monospace;color:var(--green);">${r.mtbfStr||'—'}</td>
+      <td style="font-size:.69rem;">${(r.estado||'—').replace('✅ ','').replace('⚠️ ','').replace('🔴 ','').replace('👁️ ','').split('—')[0].trim()}</td>
+      <td><button class="xbtn" onclick="borrarReg(${r.num})">🗑</button></td>`;
     body.appendChild(tr);
   });
 }
 
-function renderKPIs(db){
-  const bar=document.getElementById('kpiBar');
-  if(!db.length){bar.innerHTML='';return;}
-  const mttrArr=db.filter(r=>r.mttr!=null).map(r=>+r.mttr);
-  const mtbfArr=db.filter(r=>r.mtbf!=null).map(r=>+r.mtbf);
-  const dispArr=db.filter(r=>r.disp!=null).map(r=>+r.disp);
-  const avg=a=>a.length?(a.reduce((s,v)=>s+v,0)/a.length):null;
-  const aMttr=avg(mttrArr), aMtbf=avg(mtbfArr), aDisp=avg(dispArr);
-  bar.innerHTML=`
-    <div class="kpi-chip total"><div class="kv">${db.length}</div><div class="kl">Correctivos</div></div>
-    <div class="kpi-chip mttr"><div class="kv">${aMttr!=null?aMttr.toFixed(0)+'m':'—'}</div><div class="kl">MTTR prom.</div></div>
-    <div class="kpi-chip mtbf"><div class="kv">${aMtbf!=null?aMtbf.toFixed(0)+'h':'—'}</div><div class="kl">MTBF prom.</div></div>
-    <div class="kpi-chip disp"><div class="kv">${aDisp!=null?aDisp.toFixed(1)+'%':'—'}</div><div class="kl">Disp. prom.</div></div>`;
+function borrarReg(num){
+  if(!confirm('¿Eliminar RF-'+pad4(num)+'?'))return;
+  saveDB(loadDB().filter(r=>r.num!==num));renderHist();actualizarBadge();toast('Eliminado');
+}
+function borrarTodo(){
+  if(!confirm('¿Borrar TODOS los registros?'))return;
+  localStorage.removeItem(DB_KEY);renderHist();actualizarBadge();toast('Base limpiada');
 }
 
-function delRec(num){
-  if(!confirm(`¿Eliminar MC${String(num).padStart(4,'0')}?`))return;
-  saveDB(loadDB().filter(r=>r.num!==num)); renderDB(); updateBadge(); showToast('Registro eliminado');
-}
-function limpiarDB(){
-  if(!confirm('¿Borrar TODA la base de datos de correctivos?'))return;
-  localStorage.removeItem(DB_KEY); renderDB(); updateBadge(); showToast('Base limpiada');
-}
-
-// ─── EXCEL ───
-function exportExcelAuto(rec,numStr){exportExcel(rec,numStr,true);}
-function exportExcel(autoRec,autoNumStr,isAuto){
+// ── EXCEL ──
+function exportExcelAuto(rec){exportExcel(rec,true);}
+function exportExcel(auto,isAuto){
   const db=loadDB().sort((a,b)=>a.num-b.num);
-  if(!db.length){showToast('Sin datos para exportar');return;}
-  const hdr=['MC#','Fecha','Cuadrilla','Turno','Técnico Líder','Línea','Equipo','Componente',
-    'Tipo Falla','Modo Falla','H.Detección','H.Inicio','H.Fin','TTM(min)','MTTR(min)','MTBF(h)','Disp(%)',
-    'Descripción','Causa Raíz','Causa Detalle','Acciones','Estado','Seguimiento'];
+  if(!db.length){toast('Sin registros');return;}
+  const H=['Folio','Fecha','Línea','Máquina','Equipo','ID Activo','Marca','Modelo',
+    'Prioridad','Síntoma','Reportó','H. Falla','H. Inicio Int.','H. Fin',
+    'Downtime (min)','MTTR (min)','MTBF (h)',
+    'Tipo Falla','Causa Raíz','Trabajo Realizado','Refacciones',
+    'Estado Final','Técnico','Conf. Técnico','Conf. Operador','Observaciones','Timestamp'];
   const rows=db.map(r=>[
-    'MC'+String(r.num).padStart(4,'0'),
-    r.fecha?r.fecha.split('-').reverse().join('/'):'',
-    r.cuad||'',r.turno||'',r.lider||'',r.lineaLabel||'',r.maq||'',r.comp||'',
-    r.tipoF||'',r.modoFalla||'',r.hDet||'',r.hIni||'',r.hFin||'',
-    r.ttm!=null?r.ttm:'',r.mttr!=null?r.mttr:'',r.mtbf!=null?r.mtbf:'',
-    r.disp!=null?parseFloat(r.disp).toFixed(1):'',
-    r.desc||'',r.causaRaiz||'',r.causaDetalle||'',
-    (r.acciones||[]).map(a=>`${a.n}. ${a.txt}${a.resp?' ['+a.resp+']':''}${a.hora?' ('+a.hora+')':''}`).join(' | '),
-    r.estado||'',r.seguim||''
+    r.folio, r.fechaFmt||'', r.linea||'', r.maq||'', r.equipo||'',
+    r.idActivo||'', r.marca||'', r.modelo||'',
+    r.prior||'', r.sintoma||'', r.reportante||'',
+    r.hFalla||'', r.hIni||'', r.hFin||'',
+    r.downtime!=null?r.downtime:'', r.mttr!=null?r.mttr:'',
+    r.mtbf!=null?r.mtbf:'',
+    r.tipoFalla||'', r.causaR||'', r.trabajo||'', r.refacc||'',
+    r.estado||'', r.tec||'',
+    r.firmaTec?'Sí':'No', r.firmaUsr?'Sí':'No',
+    r.obs||'', new Date().toISOString()
   ]);
-  const ws=XLSX.utils.aoa_to_sheet([hdr,...rows]);
-  ws['!cols']=hdr.map((_,i)=>({wch:[10,12,10,10,22,10,16,18,12,14,10,10,10,8,8,8,8,50,30,50,60,12,20][i]||14}));
-  hdr.forEach((_,i)=>{
+  const ws=XLSX.utils.aoa_to_sheet([H,...rows]);
+  ws['!cols']=H.map((_,i)=>({wch:[10,11,9,18,18,10,10,10,9,50,22,8,10,8,10,8,8,8,12,50,60,40,22,22,6,6,50,20][i]||14}));
+  H.forEach((_,i)=>{
     const c=XLSX.utils.encode_cell({r:0,c:i});if(!ws[c])return;
-    ws[c].s={fill:{fgColor:{rgb:'060A14'}},font:{bold:true,color:{rgb:'38BDF8'},sz:9},
+    ws[c].s={fill:{fgColor:{rgb:'08080F'}},font:{bold:true,color:{rgb:'F97316'},sz:9},
       alignment:{horizontal:'center',wrapText:true}};
   });
-  rows.forEach((_,ri)=>{
-    hdr.forEach((__,ci)=>{
-      const c=XLSX.utils.encode_cell({r:ri+1,c:ci});if(!ws[c])return;
-      ws[c].s={fill:{fgColor:{rgb:ri%2===0?'FFFFFF':'F0F4F8'}},alignment:{vertical:'top',wrapText:true},font:{sz:9}};
-    });
-  });
+  rows.forEach((_,ri)=>H.forEach((__,ci)=>{
+    const c=XLSX.utils.encode_cell({r:ri+1,c:ci});if(!ws[c])return;
+    ws[c].s={fill:{fgColor:{rgb:ri%2===0?'FFFFFF':'F5F7FA'}},
+      alignment:{vertical:'top',wrapText:true},font:{sz:9}};
+  }));
   const wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,'Correctivos',ws);
-  const d=new Date(),ds=d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');
-  XLSX.writeFile(wb,isAuto?`Correctivo_MC${String(autoRec?.num||0).padStart(4,'0')}_${ds}.xlsx`:`Correctivos_${ds}.xlsx`);
-  if(!isAuto) showToast('📥 Excel descargado');
+  XLSX.utils.book_append_sheet(wb,'Fallas',ws);
+  const d=new Date(),ds=d.getFullYear()+zp(d.getMonth()+1)+zp(d.getDate());
+  XLSX.writeFile(wb,isAuto&&auto?`Falla_${auto.folio}_${ds}.xlsx`:`Fallas_${ds}.xlsx`);
+  if(!isAuto) toast('📥 Excel descargado');
 }
 
-// ─── GOOGLE SHEETS + DRIVE ───
-function enviarASheets(rec){
+// ── GOOGLE SHEETS + DRIVE (mismo método que reporte de paros) ──
+function enviarSheets(rec){
   if(!SHEETS_URL) return;
-  const payload={
-    tipo:'CORRECTIVO',
-    mc:'MC'+String(rec.num).padStart(4,'0'),
-    fecha:rec.fecha?rec.fecha.split('-').reverse().join('/'):'',
-    cuadrilla:rec.cuad||'', turno:rec.turno||'', lider:rec.lider||'',
-    linea:rec.lineaLabel||'', maquina:rec.maq||'', componente:rec.comp||'',
-    tipoFalla:rec.tipoF||'', modoFalla:rec.modoFalla||'',
-    hDeteccion:rec.hDet||'', hInicio:rec.hIni||'', hFin:rec.hFin||'',
-    ttm:rec.ttm!=null?rec.ttm:'', mttr:rec.mttr!=null?rec.mttr:'',
-    mtbf:rec.mtbf!=null?rec.mtbf:'',
-    disponibilidad:rec.disp!=null?parseFloat(rec.disp).toFixed(1):'',
-    descripcion:rec.desc||'', causaRaiz:rec.causaRaiz||'', causaDetalle:rec.causaDetalle||'',
-    acciones:(rec.acciones||[]).map(a=>`${a.n}. ${a.txt}${a.resp?' ['+a.resp+']':''}${a.hora?' ('+a.hora+')':''}`).join(' | '),
-    estado:rec.estado||'', seguimiento:rec.seguim||'',
-    reporteTexto: document.getElementById('rptMsg')?.textContent||'',
+  const p={
+    tipo:'RF', folio:rec.folio, fecha:rec.fechaFmt||'',
+    linea:rec.linea||'', maquina:rec.maq||'', equipo:rec.equipo||'',
+    idActivo:rec.idActivo||'', marca:rec.marca||'', modelo:rec.modelo||'',
+    prioridad:rec.prior||'', sintoma:rec.sintoma||'', reportante:rec.reportante||'',
+    hFalla:rec.hFalla||'', hInicioInt:rec.hIni||'', hFin:rec.hFin||'',
+    downtimeMins:rec.downtime!=null?rec.downtime:'',
+    mttrMins:rec.mttr!=null?rec.mttr:'',
+    mtbfH:rec.mtbf!=null?rec.mtbf:'',
+    tipoFalla:rec.tipoFalla||'', causaRaiz:rec.causaR||'',
+    trabajoRealizado:rec.trabajo||'', refacciones:rec.refacc||'',
+    estadoFinal:rec.estado||'', tecnico:rec.tec||'',
+    confirmacionTecnico:rec.firmaTec?'Sí':'No',
+    confirmacionOperador:rec.firmaUsr?'Sí':'No',
+    observaciones:rec.obs||'',
+    reporteTexto:rec.msg||'',
     timestamp:new Date().toISOString()
   };
-  // Mismo método que reporte de paros: POST sin headers extra + GET de respaldo
-  fetch(SHEETS_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(payload)}).catch(()=>{});
-  // GET de respaldo (compatible con doGet en Apps Script)
+  // POST sin headers (mismo método reporte de paros)
+  fetch(SHEETS_URL,{method:'POST',mode:'no-cors',body:JSON.stringify(p)}).catch(()=>{});
+  // GET de respaldo
   try{
-    const p=new URLSearchParams(Object.fromEntries(
-      Object.entries(payload).map(([k,v])=>[k,String(v).slice(0,300)])
+    const qs=new URLSearchParams(Object.fromEntries(
+      Object.entries(p).map(([k,v])=>[k,String(v).slice(0,250)])
     ));
-    fetch(SHEETS_URL+'?'+p.toString(),{method:'GET',mode:'no-cors'}).catch(()=>{});
+    fetch(SHEETS_URL+'?'+qs,{method:'GET',mode:'no-cors'}).catch(()=>{});
   }catch(e){}
 }
-
-// ─── TOAST ───
-function showToast(msg,ms=2700){
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('on');
-  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('on'),ms);
-}
-function closeLB(){document.getElementById('lb').classList.remove('on');}
 </script>
 
+<!--
+================================================================
+APPS SCRIPT — Copia esto en https://script.google.com
+================================================================
+const SHEET_ID  = 'TU_SPREADSHEET_ID';
+const FOLDER_ID = 'TU_FOLDER_DRIVE_ID';
+
+function doPost(e) {
+  try {
+    var data={};
+    try{data=JSON.parse(e.postData.contents);}catch(x){data=e.parameter||{};}
+    return procesar(data);
+  }catch(err){return ContentService.createTextOutput('ERR').setMimeType(ContentService.MimeType.TEXT);}
+}
+function doGet(e){
+  try{return procesar(e.parameter||{});}
+  catch(err){return ContentService.createTextOutput('ERR').setMimeType(ContentService.MimeType.TEXT);}
+}
+function procesar(d){
+  guardarSheet(d);
+  if(d.reporteTexto&&d.reporteTexto.length>5) guardarDrive(d);
+  return ContentService.createTextOutput('OK').setMimeType(ContentService.MimeType.TEXT);
+}
+function guardarSheet(d){
+  var ss=SpreadsheetApp.openById(SHEET_ID);
+  var sh=ss.getSheetByName('Fallas')||ss.insertSheet('Fallas');
+  if(sh.getLastRow()===0){
+    sh.appendRow(['Folio','Fecha','Línea','Máquina','Equipo','ID Activo','Marca','Modelo',
+      'Prioridad','Síntoma','Reportó','H. Falla','H. Inicio','H. Fin',
+      'Downtime(min)','MTTR(min)','MTBF(h)','Horas-Hombre',
+      'Tipo Falla','Causa Raíz','Trabajo Realizado','Refacciones',
+      'Estado Final','Técnico','Conf. Tec.','Conf. Op.','Observaciones','Timestamp']);
+    var h=sh.getRange(1,1,1,28);
+    h.setBackground('#08080F');h.setFontColor('#F97316');
+    h.setFontWeight('bold');sh.setFrozenRows(1);
+  }
+  sh.appendRow([d.folio||'',d.fecha||'',d.linea||'',d.maquina||'',d.equipo||'',
+    d.idActivo||'',d.marca||'',d.modelo||'',d.prioridad||'',d.sintoma||'',
+    d.reportante||'',d.hFalla||'',d.hInicioInt||'',d.hFin||'',
+    d.downtimeMins||'',d.mttrMins||'',d.mtbfH||'',
+    d.tipoFalla||'',d.causaRaiz||'',d.trabajoRealizado||'',d.refacciones||'',
+    d.estadoFinal||'',d.tecnico||'',d.confirmacionTecnico||'',d.confirmacionOperador||'',
+    d.observaciones||'',d.timestamp||new Date().toISOString()]);
+  var row=sh.getLastRow();
+  sh.getRange(row,1,1,28).setBackground(row%2===0?'#F0F4F8':'#FFFFFF');
+}
+function guardarDrive(d){
+  try{
+    var folder=DriveApp.getFolderById(FOLDER_ID);
+    var nombre=(d.folio||'RF')+'_'+(d.fecha||'').replace(/\//g,'-')+'.txt';
+    var archivos=folder.getFilesByName(nombre);
+    if(archivos.hasNext()) archivos.next().setContent(d.reporteTexto);
+    else folder.createFile(nombre,d.reporteTexto,MimeType.PLAIN_TEXT);
+  }catch(e){Logger.log('Drive: '+e);}
+}
+================================================================
+PASOS:
+1. script.google.com → Nuevo proyecto
+2. Pega el código de arriba, ajusta SHEET_ID y FOLDER_ID
+3. Implementar → Nueva implementación → App web
+   · Ejecutar como: Yo
+   · Quién accede: Cualquier usuario
+4. Copia la URL → pégala en SHEETS_URL al inicio del HTML
+================================================================
+-->
 </body>
 </html>
